@@ -1,0 +1,56 @@
+"
+" File name: ref.txt
+"
+" Author: Piyush
+"
+" Description: Frequently used commands
+" 
+" Chanage log:
+" 2017/06/26 : Initial version. (Piyush)
+"
+"
+
+>pwd
+>cd [~,-,.,..,/.../]
+>ls -ltrh --color=always
+>ls [-all,-link,-ld,-d */]
+>ls -l | wc -l
+>ls -ltrd <dirpath> | grep '^d'  	#To get list of dirs (not links)
+>cp [-rf,-Rp] source destination
+>ln -s /.../<original_file_name> /.../<duplicate_link_name>
+>mv [-rf] source destination
+>mv old_name new_name
+>rm [-rf] /.../<file_dir_name>
+>tree [-L <some_number>]
+>find . -name <starting_String_of_file>\*
+>find . -maxdepth <value> -mtime <modified_in_last_N_days> -type d -name <dir_name>
+>du -sh *
+>nautilus /.../<file_name>
+>ps aux
+>kill <PID_Number_of_program>
+>type [l,ls]
+>alias [l,h]
+>[eog,display] /.../image_name.xyz
+>env | less
+>printenv
+>echo $(date +%Y%m%d%H%M%S)
+>grep [-i,-A <number_of_lines>] <Word> /.../*.<xyz>
+>zgrep [-i,-A,-H,-E] <word> /.../*.gz
+>gvim -p *.<xyz>
+>gvim ~/.kshrc
+>chmode +x <file_name>[.ksh,...]
+>source ~/.kshrc [OR] . ~/.kshrc
+>firefox /.../<file_name>.html
+>gvimdiff <file_name1> <file_name2>
+>tkdiff <file_name1> <file_name2>
+>diff -rq <dir_1> <dir_2>
+>awk [-F_] 'BEGIN{print "File found"}/^[0-9a-zA-Z]/{if(NF>2) print $3; else if(NF>1) print $2; else print "None"}END{print "End"}' <file_name> #Example
+>awk '{$2~/^[0-9]+$/?slk=$8:slk=$7; if(slk<3){split($0,m,"/");if(m[12] in d){d[m[12]]++}else{d[m[12]]=1}}}END{for(n in d)print n":"d[n]}' <file_name> #Example
+>sed '/pattern/!d' <file_name>
+>sed 's/pattern1/replace_pattern1/g' <file_name>
+>ssh-keygen -t rsa -b 4096 -C "<email-id>"
+>tar -zcvf /.../<newdirname>.tar.gz /.../<dirpath>
+>tar -zxvf /.../<filename>.tar.gz
+>telnet [host]
+
+@cadence>editor="gvim"

@@ -1,0 +1,149 @@
+"
+" File name: vimrc.txt
+"
+" Author: Piyush
+"
+" Description: Modified .vimrc (Vim Run Commands)
+" 
+" Chanage log:
+" 2017/06/26 : Initial version. (Piyush)
+"
+"
+
+"--------------------Modifications start--------------------
+"Type ':set guifont?' to get current guifont
+if has("unix") "(for Linux)
+	set guifont=Monospace\ 13
+else "(for Window)
+	set guifont=Lucida_Console:h10
+endif
+"set linespace=1	"Spacing between lines
+set guioptions+=b 	"Enable Bottom (horizontal) scrollbar
+set number		"Display Line number
+"set relativenumber	"Display Relative Line number (available only from version 7.3)
+set cursorline		"Highlight Cursor line
+set incsearch		"Enable Incremental Search
+set tabpagemax=100	"Number of Tabs Limit
+set cindent		"C style indentation
+set tildeop		"Tilde command '~'
+set nowrap		"Disable text wraping
+set textwidth=0		"Disable automatic text wrapping"
+
+"solarized colorscheme from http://ethanschoonover.com/solarized/vim-colors-solarized 
+"Downloaded from https://github.com/altercation/vim-colors-solarized/blob/master/colors/solarized.vim to ~/.vim/colors/solarized.vim
+syntax enable
+"set background=dark
+"colorscheme solarized
+
+"nnoremap <esc> :noh<return><esc>
+"Alternative to Ctrl+'u'
+nmap <C-k> <C-u>
+"Alternative to Ctrl+'d'
+nmap <C-j> <C-d>
+
+"To map <leader> key to space-bar
+let mapleader = " "
+"Alternative to character ':'
+nmap <leader><leader> :
+"Alternative to character '"'
+map <leader>u "
+"To set (dark or light) solarized colorscheme
+if has("unix") "(for Linux)
+	nmap <leader>c :set guifont=Monospace\ Bold\ 13<CR>:let &background=(&background=="dark"?"light":"dark")<BAR>set background?<CR>:colorscheme solarized<CR>
+else "(for Window)
+	nmap <leader>c :set guifont=Lucida_Console:h10:b<CR>:let &background=(&background=="dark"?"light":"dark")<BAR>set background?<CR>:colorscheme solarized<CR>
+endif
+"To set default colorscheme
+if has("unix") "(for Linux)
+	nmap <leader>C :set guifont=Monospace\ 13<CR>:set background=light<CR>:colorscheme default<CR>
+else "(for Window)
+	nmap <leader>C :set guifont=Lucida_Console:h10<CR>:set background=light<CR>:colorscheme default<CR>
+endif
+"To avoid adding linebreak after default textwidth 78 (optional>:set wrapmargin=0<CR>:set formatoptions-=t<CR>)
+nmap <leader>l :set textwidth=0<CR>
+"To highlight/unhighlight current line
+nmap <leader>L :set cursorline!<CR>
+"To set relative line-number (available only from version 7.3)
+nmap <leader>r :set relativenumber!<CR>
+"To unhighlight previous search
+nmap <leader>h :nohlsearch<CR>
+"To run command in all open tabs
+nmap <leader>t :tabdo 
+"To open see all search matched line in quickfix window
+nmap <leader>T :vimgrep /<C-r>//g%<CR>:copen<CR>f\|zs
+"To move cursor regardless of available characters
+nmap <leader>v :let &virtualedit=(&virtualedit==""?"all":"")<BAR>set virtualedit?<CR>
+"To cut
+vmap <leader>x "*x
+"To copy
+vmap <leader>y "*y
+"To paste before cursor
+nmap <leader>P "*gP
+"To paste after cursor
+nmap <leader>p "*gp
+"To select all
+nmap <leader>a ggVG
+"To save current file
+nmap <leader>s :w<CR>
+"To exit
+nmap <leader>q :q<CR>
+"Alternative to Ctrl+'w'
+nmap <leader>w <C-w>
+"To open current file directory in gvim file explorer
+nmap <leader>e :e %:p:h<CR>
+"To open file from recently opened file list
+nmap <leader>b :browse oldfiles!<CR>
+"To open recently opened file/directory
+nmap <leader>B <C-^>
+"To open file in new tab from filename under cursor
+nmap <leader>f "zyiw :tabedit %:p:h/<C-r>z*<CR>
+"To open file in new tab from filepath under cursor
+nmap <leader>F "zyiW :tabedit <C-r>z*<CR>
+"To highlight GPA grades with color
+function! GPAhighlight()
+	set nowrap
+	set guioptions+=b
+	set virtualedit=all
+	highlight CursorLine gui=bold guibg=NONE
+	set cursorline
+	syntax match Grade_A_NA_4 "\( A  \| NA \|4\...\%[ ]\)"
+	highlight Grade_A_NA_4 guibg=green guifg=black
+	syn match Grade_B_C_L4 "\( B  \| C  \|[0-3]\...\%[ ]\)" 
+	hi Grade_B_C_L4 guibg=yellow guifg=black
+	syn match Grade_Px / P. /
+	hi Grade_Px guibg=gray guifg=black
+	syn match Grade_D " D  "
+	hi Grade_D guibg=red guifg=black
+	syn match Grade_F " F  "
+	hi Grade_F guibg=white guifg=black
+	vertical diffsplit
+	vertical resize 30
+"	set scrollopt-=hor
+"	diffupdate
+	set scrollbind scrollopt-=hor
+	execute "normal! gg\<C-w>\<C-w>gg"
+	set nohlsearch
+	execute "normal! /VIM \<CR>zs"
+	echom "Grades has been highlighted"
+endfunction
+nmap <leader>g :call GPAhighlight()<CR>
+
+"gvim Informations:
+":so ~/.vimrc			"To load ~/.vimrc without closing file
+".				"To repeat last normal mode command
+"@:				"To repeat last command-line command/changes
+":%s/word/willreplace/gc	"To replace beginning
+":.,$s/word/willreplace/gc	"To replace from current cursor position
+"/start\_.\{-}\_$		"To search
+"/start\_.\{-}end		"between 'start' and 'end_of_line','\_.\{-}\_$' search any character or inclueding line break upto any first match of 'end'
+"/Word\c			"for case insensitive
+"/word\C			"for case sensitive
+"/word/e+1			"for 1 offset of cursor position from matched word end
+"/4\...\%[ ]			"to search 4. + any 2 character + space if next char is space
+"/"[^"]*"			"to search " + any character other than " + "
+":sort[!] rn //			"to sort last searched pattern,n=numerical sort,r=for matched pattern,!=reverse sort
+":%!column -t -s ','		"to reformat column of csv separated by ',' (',' will replace by spaces)
+"/^[A-Z]\?\s\+\d\+		"to find pattern like:(' 1' or'N   2')
+
+"--------------------Modifications end--------------------
+
