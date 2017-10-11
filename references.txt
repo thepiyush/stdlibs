@@ -20,13 +20,16 @@
 >ln -s /.../<original_file_name> /.../<duplicate_link_name>
 >mv [-rf] source destination
 >mv old_name new_name
+>rename <keyword> <replace_keyword> <file_list>
+>rename [-n(No_action)] 's/oldname/newname/g' <file_list>
 >rm [-rf] /.../<file_dir_name>
 >tree [-L <some_number>]
 >find . -name <starting_String_of_file>\*
 >find . -maxdepth <value> -mtime <modified_in_last_N_days> -type d -name <dir_name>
->du -sh *
+>du -sh * [OR] du -sh * | sort -hr | head -n10
 >nautilus /.../<file_name>
 >ps aux
+>top [-u <user_id> -O <short_field/char> -h]
 >kill <PID_Number_of_program>
 >type [l,ls]
 >alias [l,h]
@@ -34,8 +37,9 @@
 >env | less
 >printenv
 >echo $(date +%Y%m%d%H%M%S)
->grep [-i,-A <number_of_lines>] <Word> /.../*.<xyz>
+>grep [-i,-A <number_of_lines>,-v] <Word> /.../*.<xyz>
 >zgrep [-i,-A,-H,-E] <word> /.../*.gz
+>tr '\n' ' '
 >gvim -p *.<xyz>
 >gvim ~/.kshrc
 >chmode +x <file_name>[.ksh,...]
