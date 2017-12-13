@@ -135,7 +135,7 @@ nmap <leader>g :call GPAhighlight()<CR>
 ":%s/word/willreplace/gc	"To replace beginning
 ":.,$s/word/willreplace/gc	"To replace from current cursor position
 "/start\_.\{-}\_$		"To search
-"/start\_.\{-}end		"Between 'start' and 'end_of_line','\_.\{-}\_$' search any character or inclueding line break upto any first match of 'end'
+"/start\_.\{-}end		"Between 'start' and 'end_of_line','\_.\{-}\_$' search any character or including line break upto any first match of 'end'
 "/Word\c			"For case insensitive
 "/word\C			"For case sensitive
 "/word/e+1			"For 1 offset of cursor position from matched word end
@@ -145,6 +145,8 @@ nmap <leader>g :call GPAhighlight()<CR>
 ":%!column -t -s ','		"To reformat column of csv separated by ',' (',' will replace by spaces)
 "/^[A-Z]\?\s\+\d\+		"To find pattern like:(' 1' or'N   2')
 ":%s/^\(.*\)\(\n\1\)\+$/\1/gc	"To delete consecutive duplicates lines
+":g/pattern/d			"To delete all lines that match a pattern
+":v/pattern/d			"To delete all lines that does NOT match a pattern
 
 "--------------------Modifications end--------------------
 
