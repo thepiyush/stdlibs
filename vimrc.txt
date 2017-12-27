@@ -28,6 +28,7 @@ set cindent		"C style indentation
 set tildeop		"Tilde command '~'
 set nowrap		"Disable text wraping
 set textwidth=0		"Disable automatic text wrapping"
+"set diffopt+=iwhite	"To ignore white space difference in gvimdiff
 
 "solarized colorscheme from http://ethanschoonover.com/solarized/vim-colors-solarized 
 "Downloaded from https://github.com/altercation/vim-colors-solarized/blob/master/colors/solarized.vim to ~/.vim/colors/solarized.vim
