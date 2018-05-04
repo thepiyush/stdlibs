@@ -51,6 +51,15 @@ alias gt='gnome-terminal --maximize'
 function nt {
 	nut "$@" &
 }
+##GitHub
+alias gh='eval $(ssh-agent -s) && ssh -T git@github.com'
+#### Git-lab ssh key setup
+##cat ~/.ssh/id_rsa.pub
+##ssh-keygen -t rsa -C <your email address>
+##cat ~/.ssh/config
+##echo "AFSTokenPassing no" >> ~/.ssh/config
+##chmod 755 ~/.ssh/config
+alias gl='eval $(ssh-agent -s) && ssh -T git@gitlab.com'
 
 #Interactive Shell options
 TTY=$(tty|cut -f3-4 -d/)
@@ -63,17 +72,23 @@ $'
 #ver vxpedit editor
 export VXP_EDITOR=gedit
 
-##To call interpreter.py script (Eg. u arg1 arg2 arg3 ...)
+##To call interpreter.py script from Korn shell(~/.kshrc) (Eg. u arg1 arg2 arg3 ...)
 #function u {
-#	pyscript="python /.../interpreter.py shell $@";
-#	set -f; $pyscript; if [[ $? == 10 ]]; then pyscriptout=`$pyscript`; set +f; eval "${pyscriptout#*@shell>}"; fi; set +f;
-#}
-##To call interpreter_dev.py script (Eg. e arg1 arg2 arg3 ...)
-#function e {
 #	echo "Input Arguments: $0 $@"
 #	echo "shell start time = `date +%H:%M:%S.%N`"
-#	pyscript="python /.../interpreter_dev.py shell $@";
-#	set -f; $pyscript; if [[ $? == 10 ]]; then pyscriptout=`$pyscript`; set +f; eval "${pyscriptout#*@shell>}"; fi; set +f;
+####	python /.../interpreter.py 'shell' "$@";
+####	if [[ $? == 10 ]];then 
+####		#pyscriptout=$(python /.../interpreter.py 'shell' "$@");
+####		pyscriptout=`python /.../interpreter.py 'shell' "$@"`;
+####		eval ${pyscriptout#*@shell>}
+####	fi
+###	export PYOUT_INTERPRETER=''
+###	echo $PYOUT_INTERPRETER
+##	pyscript="python /.../interpreter.py shell $@";
+##	set -f; $pyscript; if [[ $? == 10 ]]; then pyscriptout=`$pyscript`; set +f; eval "${pyscriptout#*@shell>}"; fi; set +f;
+#	tmpfile=$(mktemp);trap "rm $tmpfile" 0 2 3 15;echo "Created temporary file: "$tmpfile;
+#	python /.../interpreter.py 'tmpfile='$tmpfile "$@";
+#	if [[ $? == 10 ]];then eval "$(cat "$tmpfile")"; fi;
 #	echo "shell stop  time = `date +%H:%M:%S.%N`"
 #}
 #
