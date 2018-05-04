@@ -135,6 +135,7 @@ nmap <leader>g :call GPAhighlight()<CR>
 "@:				"To repeat last command-line command/changes
 ":%s/word/willreplace/gc	"To replace beginning
 ":.,$s/word/willreplace/gc	"To replace from current cursor position
+":%s/\(.*\) \(.*\)/\=printf('%3d %s %s',line('.'),submatch(2),submatch(1))/gc "To print with current line no with swap words
 "/start\_.\{-}\_$		"To search
 "/start\_.\{-}end		"Between 'start' and 'end_of_line','\_.\{-}\_$' search any character or including line break upto any first match of 'end'
 "/Word\c			"For case insensitive
