@@ -1,3 +1,4 @@
+#!/usr/bin/python
 #
 # File name: stdlib.py
 #
@@ -27,32 +28,6 @@ def verify_Python_version():
 	if sys.version_info != (2, 6, 6, 'final', 0):
 		userexit('ask',"Script may not run properly due to different Python versions:\n" + \
 			"\tScript is written for Python 2.6.6 and current Python version is " + str(sys.version_info) + ".")
-
-def get_parsedarguments(args):
-	"""Return parsed arguments and return2shell info"""
-	#Read arguments
-	#parser = OptionParser()
-	#parser.add_option("-d","--datafile", dest='datafile',help='Help for datafile argument.')
-	#(options, args) = parser.parse_args()
-	#arg1 = str(options.datafile)
-	#if(arg1 == 'None'):
-	#	print("\nDatafile does not found.\n")
-	#	sys.exit(0)
-	args = []
-	for i in range(2+10):
-		args.append(('' if(str(sys.argv[i]) == ',')else str(sys.argv[i])) if(len(sys.argv) > i)else '')
-	#print("List of real system arguments:\n  "+"\n  ".join([str(idx) + "." + ag for idx,ag in enumerate(args)]))
-	return2shell = False
-	if(args[1] == 'shell'):
-		args.pop(1)
-		args.append('')
-		return2shell = True
-	if(args[1].strip() != '' and '.' in args[1]):
-		infofile = args[1].replace(',','\n').replace('.',' ') + '\n'
-		args[1] = '--'
-	else:
-		infofile = 'file'
-	return return2shell,infofile,args
 
 def userexit(status = 'ask',errormsg = ''):
 	"""Confirmation with user before termination of script"""
@@ -394,13 +369,17 @@ def get_commandname(cmdstr,*commandtypes):
 	"""Get exact command name based on command string and command types"""
 	return get_nearest_match(cmdstr.lower(),get_commandlist(*commandtypes)).strip()
 
-def sendcmd2shell(cmdstr):
+def sendcmd2shell(cmdstr, file2shell):
 	"""Print shell command and return to parent script"""
 	#os.environ['PYOUT_INTERPRETER'] = "@shell>" + cmdstr
 	#os.putenv('PYOUT_INTERPRETER',"@shell>" + cmdstr)
 	#cmd("export PYOUT_INTERPRETER='@shell>'",True)
 	#print 'PYOUT_INTERPRETER:'+str(get_environ('PYOUT_INTERPRETER'))
-	print("@shell>" + cmdstr)
+	if(os.path.isfile(file2shell)):
+		with open(file2shell, 'w+') as f:
+			f.write(cmdstr)
+	else:
+		print("@shell>" + cmdstr)
 	sys.exit(10)
 
 def get_pathlist(pathmatrix,pathtype = 'file',filestr='',lsltrpickup = 0):
@@ -441,7 +420,7 @@ def get_pathlist(pathmatrix,pathtype = 'file',filestr='',lsltrpickup = 0):
 					print(("Directory" if(pathtype!='file')else "File") + " not found for '" + path + "' path search.")
 	return availablepathlist
 
-def openpath(pathmatrix,editor='',searchstr='',filestr='',lsltrpickup=0,return2shell=False):
+def openpath(pathmatrix,editor='',searchstr='',filestr='',lsltrpickup=0,file2shell=''):
 	"""Open file or dir path with given constraint like editor,searchstr,filestr,lsltrpickup,etc."""
 	editor = get_commandname(editor,'command','editor') if(type(editor) is str)else get_commandname(*editor)
 	lsltrpickup = (int(lsltrpickup) if(lsltrpickup.isdigit())else 0) if(type(lsltrpickup) is str)else lsltrpickup
@@ -492,13 +471,13 @@ def openpath(pathmatrix,editor='',searchstr='',filestr='',lsltrpickup=0,return2s
 		#Commands
 		elif(editor == 'cd' or editor == 'cdls' or editor == 'cdlsltr'):
 			for idx,dir in enumerate(pathlist):
-				if(return2shell == True and (idx == 0 and len(pathlist) == 1 and dir != get_pwd())):
+				if(file2shell != '' and (idx == 0 and len(pathlist) == 1 and dir != get_pwd())):
 					if(editor == 'cd'):
-						sendcmd2shell("cd " + dir)
+						sendcmd2shell("cd " + dir, file2shell)
 					elif(editor == 'cdls'):
-						sendcmd2shell("cd " + dir + " && ls --color=always " + filestr)
+						sendcmd2shell("cd " + dir + " && ls --color=always " + filestr, file2shell)
 					else:
-						sendcmd2shell("cd " + dir + " && ls -ltrh --color=always " + filestr)
+						sendcmd2shell("cd " + dir + " && ls -ltrh --color=always " + filestr, file2shell)
 				else:
 					if(editor == 'cd'):
 						os.system("gnome-terminal --window --maximize --working-directory=\"" + dir + "\"")
@@ -655,4 +634,3 @@ def list_dir(dirpath,list_type = 'lsltr'):
 		print(cmd("ls --color=always " + dirpath + "/"))
 	else:
 		print(cmd("ls -ltrh --color=always " + dirpath + "/"))
-
