@@ -18,10 +18,6 @@ import time
 import difflib
 import itertools
 import re
-import numpy as np
-import inspect
-import datetime
-#from optparse import OptionParser
 
 def verify_Python_version():
 	"""Check and verify current version of Python"""
