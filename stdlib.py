@@ -269,7 +269,7 @@ def get_nearest_match(word,wordlist):
 
 def get_natural_nearest_match(words,possibilities,dummychar='.'):
 	"""Find 'natural' nearest matching pairs for 'words' list from 'possibilities' list"""
-	if words:
+	if words and possibilities:
 		get_chr = lambda wrd,dc=dummychar: ("".join((dc if(c in '0123456789')else  c ) for c in wrd))
 		get_num = lambda wrd             : ("".join(( c if(c in '0123456789')else '0') for c in wrd))
 		dict = {}
@@ -279,7 +279,7 @@ def get_natural_nearest_match(words,possibilities,dummychar='.'):
 		for wrd in ([words] if(type(words) is str)else words):
 			nwrd = difflib.get_close_matches(get_chr(wrd),dict.keys(),1,0)[0]
 			nwords.append(dict[nwrd][min(dict[nwrd].keys(), key=lambda x:abs(int(x)-int(get_num(wrd))))])
-		return nwords
+		return (nwords[0] if(type(words) is str)else nwords)
 	else:
 		return ('' if(type(words) is str)else [])
 
