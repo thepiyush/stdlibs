@@ -18,6 +18,7 @@ import time
 import difflib
 import itertools
 import re
+import numpy as np
 
 def verify_Python_version():
 	"""Check and verify current version of Python"""
