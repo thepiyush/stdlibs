@@ -25,6 +25,8 @@
 >mv old_name new_name
 >rename <keyword> <replace_keyword> <file_list>
 >rename [-n(No_action)] 's/oldname/newname/g' <file_list>
+>touch [-c,-a,-m,-t,-r] <file1> <file2> ...
+>touch -r <fromfiletimestamp> <tofiletimestamp>
 >rm [-rf] /.../<file_dir_name>
 >tree [-L <some_number>]
 >find . -name <starting_String_of_file>\*
