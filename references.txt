@@ -59,6 +59,7 @@
 >awk '{$2~/^[0-9]+$/?slk=$8:slk=$7; if(slk<3){split($0,m,"/");if(m[12] in d){d[m[12]]++}else{d[m[12]]=1}}}END{for(n in d)print n":"d[n]}' <file_name> #Example
 >awk '{f=f+(FNR==1?1:0)}f==1{print "file1";next}f==2{print "file2";next}f==3{print "file3";next}f==4{print "file4";next}' <file1> <file2> <file3> <file4> #Example
 >awk 'NR==FNR{array[$1,$2]=$3;next}($1,$2) in array{print $1","$2": "array[$1,$2]" "$3}' <(zcat <file1>.gz) <(zcat <file2>.gz) #Example
+>gzip -dc <file1>.gz <file2>.gz | awk 'NR==FNR{array[$1,$2]=$3;next}($1,$2) in array{print $1","$2": "array[$1,$2]" "$3}' #Example
 >sed '/pattern/!d' <file_name>
 >sed 's/pattern1/replace_pattern1/g' <file_name>
 >ssh-keygen -t rsa -b 4096 -C "<email-id>"
