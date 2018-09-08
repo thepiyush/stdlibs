@@ -68,6 +68,7 @@
 >gzip -d <file>.gz [OR] zcat <file>.gz
 >gzip -c <file> > <file>.gz [OR] gzip <file>
 >telnet [host]
+>mail -s "subject" -a <file> <emailid> < message.txt
 >sort [-g,-r,-k m,n,-h]
 
 #Separate block with '---...\n' pattern, inside block search for specific pattern with group and print only first match group
