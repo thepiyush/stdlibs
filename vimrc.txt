@@ -92,10 +92,10 @@ nmap <leader>q :q<CR>
 nmap <leader>w <C-w>
 "To open current file directory in gvim file explorer
 nmap <leader>e :e %:p:h<CR>
-"To open file from recently opened file list
-nmap <leader>b :browse oldfiles!<CR>
 "To open recently opened file/directory
-nmap <leader>B <C-^>
+nmap <leader>b <C-^>
+"To open file from recently opened file list
+nmap <leader>B :browse oldfiles!<CR>
 "To open file in new tab from filename under cursor
 nmap <leader>f "zyiw :tabedit %:p:h/<C-r>z*<CR>
 "To open file in new tab from filepath under cursor
