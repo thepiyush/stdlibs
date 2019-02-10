@@ -50,9 +50,11 @@ mpaly 03_track_3.wma
 
 To install Kodi:
 sudo apt-get install kodi
-Kodi Add-ons:
-Backup: Add-ons > Download > Program Add-ons > Backup > Install
-Youtube: Add-ons > Download > Program Add-ons > YouTube > Install
+To Start Kodi on system bootup - Add following line to /etc/rc.local file:
+sudo -b -u pi kodi
+To install Kodi Add-ons:
+Partymode autostart: Add-ons > Install from repository > Services > Partymode autostart > Install
+Backup: Add-ons > Install from repository > Program add-ons > Backup > Install
 Indigo:
 1. System > File Manage > Add Source
 2. URL: http://fusion.tvaddons.co, Name: fusion > Ok
