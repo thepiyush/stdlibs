@@ -80,6 +80,7 @@ sudo apt-get install h264enc
 sudo apt-get install gstreamer1.0-libav
 sudo apt-get install chromium-browser
 sudo apt-get install -y libav-tools
+sudo apt-get install samba
 sudo apt-get install youtube-dl
 youtube-dl --extract-audio --audio-format mp3 <url>
 
