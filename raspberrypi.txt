@@ -50,7 +50,8 @@ mpaly 03_track_3.wma
 
 To install Kodi:
 sudo apt-get install kodi
-To Start Kodi on system bootup - Add following 2 lines at the end of /etc/rc.local file:
+To Start Kodi on system bootup:
+- Add following 2 lines in /etc/profile.d/autostartkodi.sh (new) file (run after user login) <<OR>> at the end of /etc/rc.local file (run before user login):
 sleep 4s
 sudo -b -u pi kodi
 To install Kodi Add-ons:
