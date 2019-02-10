@@ -18,8 +18,8 @@ sudo apt-get dist-upgrade
 sudo apt-get clean
 df -h
 
-To install GVim:
-sudo apt-get install vim-gtk
+To change Rpi-cofig file:
+sudo gvim /boot/config.txt
 
 To Enable HDMI sound (Uncomment following line in /boot/config.txt):
 # uncomment to force a HDMI mode rather than DVI. This can make audio work in
@@ -59,6 +59,9 @@ Indigo:
 3. Add-ons > "Box_icon" > Install from zip file > fusion > begin-here > plugin.program.indigo-#.#.#.zip
 4. Wait for installation and Open "Indigo" Add-on.
 
+To install GVim:
+sudo apt-get install vim-gtk
+
 To enable GPIO:
 sudo apt-get install rpi.gpio
 
@@ -67,7 +70,6 @@ sudo apt-get install iceweasel
 
 Other Commands:
 sudo apt-get install vlc
-sudo apt-get install youtube-dl
 sudo apt-get install audacity
 sudo apt-get install ffmpeg
 sudo apt-get install soundconverter
@@ -76,6 +78,10 @@ sudo apt-get install gst-plugins-lame
 sudo apt-get install gstreamer0.10-plugins-ugly
 sudo apt-get install h264enc
 sudo apt-get install gstreamer1.0-libav
+sudo apt-get install chromium-browser
+sudo apt-get install -y libav-tools
+sudo apt-get install youtube-dl
+youtube-dl --extract-audio --audio-format mp3 <url>
 
 To remove package:
 sudo apt-get --purge remove <package>
