@@ -63,6 +63,9 @@ Indigo:
 3. Add-ons > "Box_icon" > Install from zip file > fusion > begin-here > plugin.program.indigo-#.#.#.zip
 4. Wait for installation and Open "Indigo" Add-on.
 
+To speeding up/slowing down video&audio (x2 = (2.0 = 1/0.5)):
+ffmpeg -i input.mkv -filter_complex "[0:v]setpts=0.5*PTS[v];[0:a]atempo=2.0[a]" -map "[v]" -map "[a]" output.mkv
+
 To install GVim:
 sudo apt-get install vim-gtk
 
