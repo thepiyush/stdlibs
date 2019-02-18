@@ -91,7 +91,9 @@ sudo apt-get install avahi-daemon
 sudo apt-get install samba
 sudo apt-get install youtube-dl
 youtube-dl --extract-audio --audio-format mp3 <url>
-youtube-dl -f "(mp4)[filesize>10M]" <url>
+youtube-dl -F <url>
+youtube-dl -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4' <url>
+youtube-dl -f 'bestvideo[height<=480][ext=mp4]+bestaudio[ext=m4a]/mp4[height<=480]' <url>
 
 To remove package:
 sudo apt-get --purge remove <package>
