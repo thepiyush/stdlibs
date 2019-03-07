@@ -307,7 +307,7 @@ def get_logiccomponents(logicdir,toplogic):
 	logiccompall = [toplogic.lower()]
 	i = 0
 	while(i < len(logiccompall)):
-		logiccomps = cmd("grep -ohiE '^.*entity\s+[0-9A-Za-z_.]+|^.*component\s+[0-9A-Za-z_]+' " + logicdir+'/vhdl/'+logiccompall[i]+'.vhdl',True).split('\n')[:-1]
+		logiccomps = cmd("grep -ohiE '^.*entity\s+[0-9A-Za-z_.]+|^.*component\s+[0-9A-Za-z_]+' " + logicdir+'/'+logiccompall[i]+'.vhdl',True).split('\n')[:-1]
 		logiccompall.extend(get_unique_list([lc.split()[-1].split('.')[-1].lower() for lc in logiccomps if('--' not in lc)] if(len(logiccomps))else []))
 		logiccompall = get_unique_list(logiccompall)
 		i = i + 1
@@ -322,10 +322,10 @@ def get_logicdiff(logicdir1,logicdir2,toplogic):
 	logicdiff = []
 	for logiccomp in get_unique_list(get_logiccomponents(logicdir1,toplogic) + get_logiccomponents(logicdir2,toplogic)):
 		if(logiccomp):
-			logicdir1comptype = ('vhdl' if(isfilepath(logicdir1+'/vhdl/'+logiccomp+'.vhdl'))else '')
-			logicdir2comptype = ('vhdl' if(isfilepath(logicdir2+'/vhdl/'+logiccomp+'.vhdl'))else '')
+			logicdir1comptype = ('vhdl' if(isfilepath(logicdir1+'/'+logiccomp+'.vhdl'))else '')
+			logicdir2comptype = ('vhdl' if(isfilepath(logicdir2+'/'+logiccomp+'.vhdl'))else '')
 			if(logicdir1comptype == 'vhdl' == logicdir2comptype):
-				diff = cmd("diff -iEbwBsI '^\s*--\|^\s*$' " + logicdir1+'/vhdl/'+logiccomp+'.vhdl ' + logicdir2+'/vhdl/'+logiccomp+'.vhdl',True)
+				diff = cmd("diff -iEbwBsI '^\s*--\|^\s*$' " + logicdir1+'/'+logiccomp+'.vhdl ' + logicdir2+'/'+logiccomp+'.vhdl',True)
 				logicdiff.append([logiccomp+'.vhdl',get_diffcnol(diff)])
 			else:
 				logicdiff.append([logiccomp,(-1 if(logicdir1comptype == '')else 0) + (-2 if(logicdir2comptype == '')else 0)])
