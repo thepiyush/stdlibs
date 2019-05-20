@@ -53,10 +53,10 @@ sudo apt-get install kodi
 To Start Kodi on system bootup:
 - Add following 2 lines in /etc/profile.d/autostartkodi.sh (new) file (run after user login) <<OR>> at the end of /etc/rc.local file (run before user login):
 #To play mp4 file as {first:00_*;second:random(05_*);third:99_*} using year
-for v in /home/pi/Downloads/00_*.mp4; do fnp=${v%.*};fne=${v##*/};fn=${fne%.*}; printf "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n<musicvideo>\n\t<title>$fn</title>\n\t<year>1000</year>\n</musicvideo>\n" > "$fnp.nfo"; done
-for v in /home/pi/Downloads/05_*.mp4; do fnp=${v%.*};fne=${v##*/};fn=${fne%.*}; printf "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n<musicvideo>\n\t<title>$fn</title>\n\t<year>$(shuf -i 1001-1999 -n 1)</year>\n</musicvideo>\n" > "$fnp.nfo"; done
+for v in /home/pi/Downloads/00_*.mp4; do fnp=${v%.*};fne=${v##*/};fn=${fne%.*}; printf "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n<musicvideo>\n\t<title>$fn</title>\n\t<year>1969</year>\n</musicvideo>\n" > "$fnp.nfo"; done
+for v in /home/pi/Downloads/05_*.mp4; do fnp=${v%.*};fne=${v##*/};fn=${fne%.*}; printf "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n<musicvideo>\n\t<title>$fn</title>\n\t<year>$(shuf -i 1970-1999 -n 1)</year>\n</musicvideo>\n" > "$fnp.nfo"; done
 for v in /home/pi/Downloads/99_*.mp4; do fnp=${v%.*};fne=${v##*/};fn=${fne%.*}; printf "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n<musicvideo>\n\t<title>$fn</title>\n\t<year>2000</year>\n</musicvideo>\n" > "$fnp.nfo"; done
-#To start Kodi in background after same delay
+#To start Kodi in background after some delay
 sleep 4s
 sudo -b -u pi kodi
 To install Kodi Add-ons:
