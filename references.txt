@@ -75,6 +75,9 @@
 #Separate block with '---...\n' pattern, inside block search for specific pattern with group and print only first match group
 >zgrep -e ".*" <file>.gz | sed 's/^\(---*\)/\f/' | gawk 'BEGIN{RS="\f\n";FS="\n"}//{for(i=1;i<=NF;i++){match($i,/^[A-Z ]......[0-9][A-Z@ ]+([0-9.-]+)/,m)?d=m[1]:e=0;};print d}'
 
+#Rename all files from ABC.DEF.txt to abc.xyz
+for f in *;do ary=(${f//./ });len=${#ary[@]};arylc=$(echo ${ary[1]} | tr '[A-Z]' '[a-z]');if [ $len -gt 2 ];then mv $f $arylc".xyz" ;fi; done
+
 #Some Cadence commands:
 @cadence>editor="gvim"
 
