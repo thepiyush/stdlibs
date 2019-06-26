@@ -1,14 +1,15 @@
 ;
-;
 ; File name: template.il
 ;
 ; Author: Piyush
 ;
 ; Description: Frequently used functions template
+; 		Eg usages:
+; 			load("/.../template.il")
+; 			template("lib1" "block1" "/.../inputfile")
 ; 
 ; Chanage log:
 ; 2019/06/23 : Initial version. (Piyush)
-;
 ;
 
 procedure( template(lib block inputfile @optional ( askuser "" ) )
@@ -17,7 +18,7 @@ procedure( template(lib block inputfile @optional ( askuser "" ) )
 		if(abstract then
 			scriptname = #.get_filename(piport)
 			;Get list & sort it
-			excludeNetNames = append(append(append(GetSupplyNames() GetGroundNames()) GetClockNames()) nil)
+			excludeNetNames = nil ;append(append(append(GetSupplyNames() GetGroundNames()) GetClockNames()) nil)
 			terms = setof(trm abstract~>terminals if(member(trm~>name excludeNetNames) nil t)) ;(trm~>net~>sigType == "signal")
 			terms = sort(terms lambda((a b) if((car(parseString(car(a~>pins~>term~>name) "<>"))!=car(parseString(car(b~>pins~>term~>name) "<>")) \
 								|| length(parseString(car(a~>pins~>term~>name) "<>"))<2 || length(parseString(car(b~>pins~>term~>name) "<>"))<2) \
@@ -28,16 +29,19 @@ procedure( template(lib block inputfile @optional ( askuser "" ) )
 			;##Update it...
 			sprintf(bbX "%.3f"  caadr(abstract~>prBoundary~>bBox))
 			sprintf(bbY "%.3f" cadadr(abstract~>prBoundary~>bBox))
-			if((isFile(tmpfile_io)) then 
-				f = outfile(tmpfile_io "w")
-				foreach(term terms
-					fprintf(f "name: \"%s\" tech: \"%s\"\n" car(term~>pins~>term~>name) case(getShellEnvVar("PROJECT") ("t1" "1") ("t2" "2") (t "0")))
-				)
-				close(f)
+			f = outfile(tmpfile_io "w")
+			foreach(term terms
+				fprintf(f "name: \"%s\" tech: \"%s\"\n" car(term~>pins~>term~>name) case(getShellEnvVar("USER") ("t1" "1") ("t2" "2") (t "0")))
+			)
+			close(f)
+			if(!isFile(tmpfile_io) then 
+				printf("Tmp file could not created!!")
+			else
+				printf("Tmp file created.")
 			)
 			;Call python script to update tmpfile_io in background
 			cmd = strcat("python " substring(scriptname 1 length(scriptname)-2) "py -p '" inputfile \
-					"' -i '" tmpfile_io "' -o '" tmpfile_io "' -t " getShellEnvVar("PROJECT"))
+					"' -i '" tmpfile_io "' -o '" tmpfile_io "' -t " getShellEnvVar("USER"))
 			if(fileLength(tmpfile_io)!=0 then
 				if(fileLength(inputfile)!=0 then
 					if((askuser != "") then 
