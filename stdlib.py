@@ -257,6 +257,11 @@ def add_matchsectionline(filepath,startpattern,endpattern,line,sectionno=0):
 	else:
 		userexit('exit',"'" + startpattern + "' and/or '" + endpattern + "' patterns does not exist for section number:" + str(sectionno) + " in file:\n" + filepath)
 
+def isfullmatch(pattern,string):
+	"""Return True if it full match from start to end"""
+	s = pattern.search(string)
+	return ((s.start() == 0 and s.end() == len(string)) if s else False)
+
 def get_nearest_match(word,wordlist):
 	"""Find nearest matching element from list"""
 	if word != '':
