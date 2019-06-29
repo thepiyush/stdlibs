@@ -582,7 +582,7 @@ def get_selectedindices(inputstr,datalist,aliaslist=[],sequencelist=[]):
 	if(not aliaslist):
 		aliaslist = get_aliaslist(datalist)
 	if(not sequencelist):
-		sequencelist = map(str,range(1,1+len(datalist)))
+		sequencelist = list(map(str,range(1,1+len(datalist))))
 	selectedindices = []
 	if ('--' in inputstr):
 		selectedindices = range(len(datalist))
