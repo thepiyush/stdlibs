@@ -522,8 +522,8 @@ def openpath(pathmatrix,editor='',searchstr='',filestr='',lsltrpickup=0,file2she
 				print(" ".join(pathlist) + "\nEnter one more argument for 'PATTERN' to 'grep' in file(s).")
 		elif(editor == 'awk'):
 			if(searchstr != ''):
-				print("awk '" + searchstr + "' " + pathliststr + " :")
-				os.system("awk '" + searchstr + "' " + pathliststr)
+				print("awk " + searchstr + " " + pathliststr + " :")
+				os.system("awk " + searchstr + " " + pathliststr)
 			else:
 				print(" ".join(pathlist) + "\nEnter one more argument for 'PATTERN'/'ACTION' to 'awk' in file(s).")
 		#Default
