@@ -438,13 +438,13 @@ def get_pathlist(pathmatrix,pathtype = 'file',filestr='',lsltrpickup = 0):
 					print(("Directory" if(pathtype!='file')else "File") + " not found for '" + path + "' path search.")
 	return availablepathlist
 
-def openpath(pathmatrix,editor='',searchstr='',filestr='',lsltrpickup=0,file2shell=''):
+def openpath(pathmatrix,editor='',searchstr='',filestr='',lsltrpickup=0,file2shell='',askpathcount=10):
 	"""Open file or dir path with given constraint like editor,searchstr,filestr,lsltrpickup,etc."""
 	editor = get_commandname(editor,'command','editor') if(type(editor) is str)else get_commandname(*editor)
 	lsltrpickup = (int(lsltrpickup) if(lsltrpickup.isdigit())else 0) if(type(lsltrpickup) is str)else lsltrpickup
 	pathlist = get_pathlist(pathmatrix,'dir' if(editor in ['cd','cdls','cdlsltr','ls','lsltr'])else 'file',filestr,lsltrpickup)
 	pathliststr = (" ".join(pathlist)).strip()
-	if(len(pathlist) > 10 and editor not in ['ls','lsltr','grep']):
+	if(len(pathlist) > int(askpathcount) and editor not in ['ls','lsltr','grep']):
 		userexit('ask',"This command will open " + str(len(pathlist)) + (" directories(terminals)." if(editor in ['cd','cdls','cdlsltr'])else " files(editors)."))
 	if(pathliststr):
 		#Editors
@@ -516,8 +516,8 @@ def openpath(pathmatrix,editor='',searchstr='',filestr='',lsltrpickup=0,file2she
 				print("")
 		elif(editor == 'grep'):
 			if(searchstr != ''):
-				print("zgrep --color=always -e " + searchstr + " " + pathliststr + " :")
-				os.system("zgrep --color=always -e " + searchstr + " " + pathliststr)
+				print("zgrep --color=always " + searchstr + " " + pathliststr + " :")
+				os.system("zgrep --color=always " + searchstr + " " + pathliststr)
 			else:
 				print(" ".join(pathlist) + "\nEnter one more argument for 'PATTERN' to 'grep' in file(s).")
 		elif(editor == 'awk'):
