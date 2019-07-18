@@ -101,7 +101,7 @@ def ispathexists(path):
 def makedir(dirpath):
 	"""Delete existing directory and Make/Create new directory"""
 	if(isdirpath(dirpath)):
-		cmd("rm -rf " + dirpath)
+		cmd("rm -rf " + get_expandedpath(dirpath))
 		if(not isdirpath(dirpath)):
 			print("\'" + dirpath + "\' directory has been deleted.")
 		else:
@@ -115,12 +115,12 @@ def makedir(dirpath):
 def copydir(sourcedirpath,destinationdirpath):
 	"""Delete existing directory and Copy source directory to destination directory"""
 	if(isdirpath(destinationdirpath)):
-		cmd("rm -rf " + destinationdirpath)
+		cmd("rm -rf " + get_expandedpath(destinationdirpath))
 		if(not isdirpath(destinationdirpath)):
 			print("\'" + destinationdirpath + "\' directory has been deleted.")
 		else:
 			userexit('exit',"\'" + destinationdirpath + "\' directory cannot be deleted.")
-	cmd("cp -rf " + sourcedirpath + " " + destinationdirpath)
+	cmd("cp -rf " + get_expandedpath(sourcedirpath) + " " + get_expandedpath(destinationdirpath))
 	if(isdirpath(destinationdirpath)):
 		print("\'" + destinationdirpath + "\' directory has been copied from \'" + sourcedirpath + "\'")
 	else:
@@ -129,12 +129,12 @@ def copydir(sourcedirpath,destinationdirpath):
 def linkdir(sourcedirpath,destinationdirpath):
 	"""Delete existing directory and Link destination directory to source directory"""
 	if(isdirpath(destinationdirpath)):
-		cmd("rm -rf " + destinationdirpath)
+		cmd("rm -rf " + get_expandedpath(destinationdirpath))
 		if(not isdirpath(destinationdirpath)):
 			print("\'" + destinationdirpath + "\' directory has been deleted.")
 		else:
 			userexit('exit',"\'" + destinationdirpath + "\' directory cannot be deleted.")
-	cmd("ln -nfs " + sourcedirpath + " " + destinationdirpath)
+	cmd("ln -nfs " + get_expandedpath(sourcedirpath) + " " + get_expandedpath(destinationdirpath))
 	if(islinkpath(destinationdirpath)):
 		print("\'" + destinationdirpath + "\' directory has been linked to \'" + sourcedirpath + "\'")
 	else:
@@ -488,28 +488,28 @@ def openpath(pathmatrix,editor='',searchstr='',filestr='',lsltrpickup=0,file2she
 				print("Opened " + editor + " with file: " + fpl)
 		#Commands
 		elif(editor == 'cd' or editor == 'cdls' or editor == 'cdlsltr'):
-			for idx,dir in enumerate(pathlist):
-				if(file2shell != '' and (idx == 0 and len(pathlist) == 1 and dir != get_pwd())):
+			for i,d in enumerate(pathlist):
+				if(file2shell != '' and (i == 0 and len(pathlist) == 1 and d != get_pwd())):
 					if(editor == 'cd'):
-						sendcmd2shell("cd " + dir, file2shell)
+						sendcmd2shell("cd " + d, file2shell)
 					elif(editor == 'cdls'):
-						sendcmd2shell("cd " + dir + " && ls --color=always " + filestr, file2shell)
+						sendcmd2shell("cd " + d + " && ls --color=always " + filestr, file2shell)
 					else:
-						sendcmd2shell("cd " + dir + " && ls -ltrh --color=always " + filestr, file2shell)
+						sendcmd2shell("cd " + d + " && ls -ltrh --color=always " + filestr, file2shell)
 				else:
 					if(editor == 'cd'):
-						os.system("gnome-terminal --window --maximize --working-directory=\"" + dir + "\"")
+						os.system("gnome-terminal --window --maximize --working-directory=\"" + d + "\"")
 					elif(editor == 'cdls'):
-						os.system("gnome-terminal --window --maximize --working-directory=\"" + dir + "\" -e \"ksh -c 'ls --color=always "+searchstr+" "+filestr+"';ksh\"")
+						os.system("gnome-terminal --window --maximize --working-directory=\"" + d + "\" -e \"ksh -c 'ls --color=always "+searchstr+" "+filestr+"';ksh\"")
 					else:
-						os.system("gnome-terminal --window --maximize --working-directory=\"" + dir + "\" -e \"ksh -c 'ls -ltrh --color=always "+searchstr+" "+filestr+"';ksh\"")
-					print("Opened gnome-terminal with dir: " + dir)
+						os.system("gnome-terminal --window --maximize --working-directory=\"" + d + "\" -e \"ksh -c 'ls -ltrh --color=always "+searchstr+" "+filestr+"';ksh\"")
+					print("Opened gnome-terminal with dir: " + d)
 		elif(editor == 'ls'):
-			print("ls --color=always " + (" ".join([dir + "/" + filestr for dir in pathlist])) + " :")
-			os.system("ls --color=always " + (" ".join([dir + "/" + filestr for dir in pathlist])))
+			print("ls --color=always " + (" ".join([d + "/" + filestr for d in pathlist])) + " :")
+			os.system("ls --color=always " + (" ".join([d + "/" + filestr for d in pathlist])))
 		elif(editor == 'lsltr'):
-			print("ls -ltrh --color=always " + (" ".join([dir + "/" + filestr for dir in pathlist])) + " :")
-			os.system("ls -ltrh --color=always " + (" ".join([dir + "/" + filestr for dir in pathlist])))
+			print("ls -ltrh --color=always " + (" ".join([d + "/" + filestr for d in pathlist])) + " :")
+			os.system("ls -ltrh --color=always " + (" ".join([d + "/" + filestr for d in pathlist])))
 		elif(editor == 'cat'):
 				print("cat " + pathliststr + " :")
 				os.system("cat " + pathliststr)
@@ -615,27 +615,27 @@ def get_selectedindices(inputstr,datalist,aliaslist=[],sequencelist=[]):
 				selectedindices.append(get_selectedindex(mn,datalist,aliaslist,sequencelist)[0])
 	return selectedindices
 
-def get_dir_relevanceindex(dir,matchparameters):
-	"""Return most relevance (row) index of match parameters(=[[p11,p12,...][p21,p22,...][...]) for given dir"""
+def get_dir_relevanceindex(dirpath,matchparameters):
+	"""Return most relevance (row) index of match parameters(=[[p11,p12,...][p21,p22,...][...]) for given dirpath"""
 	parameter_matching_weight = [0]*len(matchparameters)
 	for idx,row in enumerate(matchparameters):
 		for p in row:
-			if(p in dir):
-				parameter_matching_weight[idx] += (1+(len(p)/float(len(dir))))
+			if(p in dirpath):
+				parameter_matching_weight[idx] += (1+(len(p)/float(len(dirpath))))
 	return parameter_matching_weight.index(max(parameter_matching_weight)),max(parameter_matching_weight)
 
-def get_dirs_updated(dir,matchparameters,setparameters):
-	"""Return updated dir(s) for given set parameters(=[[p11,p12,...][p21,p22,...][...]) accordingly to match parameters relevance"""
-	matched_parameters_index,matched_parameters_value = get_dir_relevanceindex(dir,matchparameters)
+def get_dirs_updated(dirpath,matchparameters,setparameters):
+	"""Return updated dirpath(s) for given set parameters(=[[p11,p12,...][p21,p22,...][...]) accordingly to match parameters relevance"""
+	matched_parameters_index,matched_parameters_value = get_dir_relevanceindex(dirpath,matchparameters)
 	matched_parameters = matchparameters[matched_parameters_index]
 	updated_dirpathlist = []
 	if(matched_parameters_value > 0):
 		for row in setparameters:
-			updated_dir = dir
+			updated_dirpath = dirpath
 			for idx,p in enumerate(row):
-				updated_dir = updated_dir.replace(matched_parameters[idx],p)
-			updated_dirpathlist.append(updated_dir)
-	return [d for d in get_unique_list(updated_dirpathlist) if(dir!=d)]
+				updated_dirpath = updated_dirpath.replace(matched_parameters[idx],p)
+			updated_dirpathlist.append(updated_dirpath)
+	return [d for d in get_unique_list(updated_dirpathlist) if(dirpath!=d)]
 
 def get_indented_list(normal_list,noofcolumn):
 	"""Return list with Added Tab(s)('\t') to the elements of list to indent columns"""
@@ -649,6 +649,6 @@ def list_dir(dirpath,list_type = 'lsltr'):
 	"""List(Print) file names of given absolute directory path"""
 	print(dirpath + "/:")
 	if(list_type == 'ls'):
-		print(cmd("ls --color=always " + dirpath + "/"))
+		print(cmd("ls --color=always " + get_expandedpath(dirpath) + "/"))
 	else:
-		print(cmd("ls -ltrh --color=always " + dirpath + "/"))
+		print(cmd("ls -ltrh --color=always " + get_expandedpath(dirpath) + "/"))
