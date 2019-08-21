@@ -79,9 +79,9 @@ vmap <leader>x "*x
 "To copy
 vmap <leader>y "*y
 "To paste before cursor
-nmap <leader>P "*gP
+nmap <leader>P "*P
 "To paste after cursor
-nmap <leader>p "*gp
+nmap <leader>p "*p
 "To select all
 nmap <leader>a ggVG
 "To save current file
@@ -149,6 +149,8 @@ nmap <leader>g :call GPAhighlight()<CR>
 ":%s/^\(.*\)\(\n\1\)\+$/\1/gc	"To delete consecutive duplicates lines
 ":g/pattern/d			"To delete all lines that match a pattern
 ":v/pattern/d			"To delete all lines that does NOT match a pattern
+"Ctrl+v <select_lines> Shift+i	"To enter in insert mode to add text at selected multiple lines
+"Ctrl+r <Register>		"To paste from register(eg.*,",a) in insert mode
 
 "--------------------Modifications end--------------------
 
