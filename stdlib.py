@@ -80,7 +80,7 @@ def get_expandedpath(path):
 
 def issamepath(dirpath1,dirpath2):
 	"""Return True if dirpath1 and dirpath2 are same."""
-	return (get_expandedpath(dirpath1) == get_expandedpath(dirpath2))
+	return (os.path.realpath(get_expandedpath(dirpath1)) == os.path.realpath(get_expandedpath(dirpath2)))
 
 def isdirpath(dirpath):
 	"""Return True if dirpath exist else False"""
