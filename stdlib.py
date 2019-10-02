@@ -634,6 +634,8 @@ def get_dirs_updated(dirpath,matchparameters,setparameters):
 			updated_dirpath = dirpath
 			for idx,p in enumerate(row):
 				updated_dirpath = updated_dirpath.replace(matched_parameters[idx],p)
+				if(dirpath!=updated_dirpath and ispathexists(updated_dirpath)):
+					break
 			updated_dirpathlist.append(updated_dirpath)
 	return [d for d in get_unique_list(updated_dirpathlist) if(dirpath!=d)]
 
