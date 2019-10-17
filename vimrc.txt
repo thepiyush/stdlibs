@@ -96,10 +96,10 @@ nmap <leader>e :e %:p:h<CR>
 nmap <leader>b <C-^>
 "To open file from recently opened file list
 nmap <leader>B :browse oldfiles!<CR>
-"To open file in new tab from filename under cursor
-nmap <leader>f "zyiw :tabedit %:p:h/<C-r>z*<CR>
 "To open file in new tab from filepath under cursor
-nmap <leader>F "zyiW :tabedit <C-r>z*<CR>
+nmap <leader>f "zyiW :tabedit <C-r>z*<CR>
+"To open file in new tab from filename under cursor
+nmap <leader>F "zyiw :tabedit %:p:h/<C-r>z*<CR>
 "To highlight GPA grades with color
 function! GPAhighlight()
 	set nowrap
