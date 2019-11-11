@@ -36,6 +36,14 @@ syntax enable
 "set background=dark
 "colorscheme solarized
 
+""To save swap/backup/undo files in fixed location, not in current dir
+"set directory=~/.vim/swapdir//
+"set backupdir=~/.vim/backupdir//
+"set undodir=~/.vim/undodir//
+"""To turn-off swap/backup files creation, recovery is impossible!
+""set noswapfile
+""set nobackup
+
 "nnoremap <esc> :noh<return><esc>
 "Alternative to Ctrl+'u'
 nmap <C-k> <C-u>
