@@ -154,6 +154,7 @@ nmap <leader>g :call GPAhighlight()<CR>
 ":sort[!] rn //			"To sort last searched pattern,n=numerical sort,r=for matched pattern,!=reverse sort
 ":%!column -t -s ','		"To reformat column of csv separated by ',' (',' will replace by spaces)
 "/^[A-Z]\?\s\+\d\+		"To find pattern like:(' 1' or'N   2')
+"/\d\{2,4}			"To find pattern like:'23' or '345' or '4567' but not '1' or '56789'
 ":%s/^\(.*\)\(\n\1\)\+$/\1/gc	"To delete consecutive duplicates lines
 ":g/pattern/d			"To delete all lines that match a pattern
 ":v/pattern/d			"To delete all lines that does NOT match a pattern
