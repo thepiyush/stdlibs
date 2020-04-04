@@ -44,6 +44,7 @@
 >cat <file> [OR] zcat <file>.gz
 >echo $(date +%Y%m%d%H%M%S)
 >grep [-i,-A <number_of_lines>,-v,-e] <Word> /.../*.<xyz>
+>grep [-F] -f <patternsfile> <searchfile>
 >zgrep [-i,-A,-H,-E] <word> /.../*.gz
 >tr '\n' ' '
 >gvim -p *.<xyz>
@@ -63,7 +64,8 @@
 >ls -ltrd * | grep '^d' | awk '{system("ls -dtr "$9"/* | tail -1");}' #list latest file of dirs
 >gzip -dc <file1>.gz <file2>.gz | awk 'NR==FNR{array[$1,$2]=$3;next}($1,$2) in array{print $1","$2": "array[$1,$2]" "$3}' #Example (not working)
 >sed [-e] '/pattern/!d' <file_name>
->sed [-e] 's/pattern1/replace_pattern1/g' <file_name> [OR] sed [-e] 's|pattern1|replace_pattern1|g' <file_name> 
+>sed [-e] 's/pattern1/replace_pattern1/g' <file_name> [OR] sed [-e] 's|pattern1|replace_pattern1|g' <file_name>
+>sed -e 's/.*/PREFIX:&:SUFFIX/' <file_name> #>>'PREFIX:'<line>':SUFFIX'
 >ssh-keygen -t rsa -b 4096 -C "<email-id>"
 >tar -zcvf /.../<newdirname>.tar.gz /.../<dirpath>
 >tar -zxvf /.../<filename>.tar.gz
