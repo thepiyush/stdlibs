@@ -20,18 +20,20 @@ import itertools
 import re
 import numpy as np
 
-def verify_Python_version():
-	"""Check and verify current version of Python"""
-	if sys.version_info != (2, 6, 6, 'final', 0):
-		userexit('ask',"Script may not run properly due to different Python versions:\n" + \
-			"\tScript is written for Python 2.6.6 and current Python version is " + str(sys.version_info) + ".")
+def userinput(usermsg):
+	"""Return user input for given message"""
+	if(sys.version_info.major == 2):
+		inputstr = raw_input(usermsg)
+	else:
+		inputstr = input(usermsg)
+	return inputstr
 
 def userexit(status = 'ask',errormsg = ''):
 	"""Confirmation with user before termination of script"""
 	if(status == 'ask'):
 		if(errormsg):
 			print(errormsg)
-		allow = raw_input("Press \"y\" to continue or other character to terminate script :")
+		allow = userinput("Press \"y\" to continue or other character to terminate script :")
 		if allow != "y" and allow != "Y" and allow != "yes" and allow != "Yes":
 			print("\nExecution Aborted.\n")
 			sys.exit(0)
@@ -48,7 +50,7 @@ def userselect(datalist=[]):
 		for idx,ele in enumerate(datalist[::-1]):
 			print(str(len(datalist)-idx) + ". " + ele)
 		print("0. Exit")
-		idx = raw_input("To select one element from above list, Please Enter Sequence Number :")
+		idx = userinput("To select one element from above list, Please Enter Sequence Number :")
 		if(idx.isdigit() and 0<(int(idx))<=len(datalist)):
 			break
 		else:
@@ -56,11 +58,6 @@ def userselect(datalist=[]):
 				userexit('exit',"User Exit.")
 			print("\nInvalid Sequence Number. Please valid Sequence Number." if(idx.isdigit())else "\nInvalid user input. Please Enter Numbers only.")
 	return int(idx)-1
-
-def userinput(usermsg):
-	"""Return user input for given message"""
-	inputstr = raw_input(usermsg)
-	return inputstr
 
 def cmd(cmdstr,shellcmd = False):
 	"""Run system command and wait until completion of it"""
@@ -73,6 +70,27 @@ def cmd(cmdstr,shellcmd = False):
 	except:
 		userexit('exit',"\'" + cmdstr + "\' command cannot be executed.")
 		return -1
+
+def sendcmd2shell(cmdstr, file2shell):
+	"""Print shell command and return to parent script"""
+	if(os.path.isfile(file2shell)):
+		with open(file2shell, 'w+') as f:
+			f.write(cmdstr)
+	else:
+		print("@shell>" + cmdstr)
+	sys.exit(10)
+
+def get_environ(envvar):
+	"""Return value of environment variable"""
+	envvarvalue = os.getenv(envvar) #to get start-up envvar: os.environ.get(envvar)
+	if(envvarvalue == None):
+		userexit('exit',"'" + envvar + "' environment variable is NOT defined. Please define it and re-run.")
+	return envvarvalue
+
+def get_pwd():
+	"""Get present working directory"""
+	return os.getcwd() #will return dereferenced symbolic link
+	#return os.getenv('PWD') #will return referenced symbolic link for linux
 
 def get_expandedpath(path):
 	"""Return 'home director' and 'environment variables' expanded path"""
@@ -98,14 +116,18 @@ def ispathexists(path):
 	"""Return True if path exists else False"""
 	return os.path.exists(get_expandedpath(path))
 
-def makedir(dirpath):
-	"""Delete existing directory and Make/Create new directory"""
+def removedir(dirpath):
+	"""Delete directory if exists"""
 	if(isdirpath(dirpath)):
 		cmd("rm -rf " + get_expandedpath(dirpath))
 		if(not isdirpath(dirpath)):
 			print("\'" + dirpath + "\' directory has been deleted.")
 		else:
 			userexit('exit',"\'" + dirpath + "\' directory cannot be deleted.")
+
+def makedir(dirpath):
+	"""Delete existing directory and Make/Create new directory"""
+	removedir(dirpath)
 	os.makedirs(get_expandedpath(dirpath))
 	if(isdirpath(dirpath)):
 		print("\'" + dirpath + "\' directory has been created.")
@@ -114,12 +136,7 @@ def makedir(dirpath):
 
 def copydir(sourcedirpath,destinationdirpath):
 	"""Delete existing directory and Copy source directory to destination directory"""
-	if(isdirpath(destinationdirpath)):
-		cmd("rm -rf " + get_expandedpath(destinationdirpath))
-		if(not isdirpath(destinationdirpath)):
-			print("\'" + destinationdirpath + "\' directory has been deleted.")
-		else:
-			userexit('exit',"\'" + destinationdirpath + "\' directory cannot be deleted.")
+	removedir(destinationdirpath)
 	cmd("cp -rf " + get_expandedpath(sourcedirpath) + " " + get_expandedpath(destinationdirpath))
 	if(isdirpath(destinationdirpath)):
 		print("\'" + destinationdirpath + "\' directory has been copied from \'" + sourcedirpath + "\'")
@@ -128,17 +145,22 @@ def copydir(sourcedirpath,destinationdirpath):
 
 def linkdir(sourcedirpath,destinationdirpath):
 	"""Delete existing directory and Link destination directory to source directory"""
-	if(isdirpath(destinationdirpath)):
-		cmd("rm -rf " + get_expandedpath(destinationdirpath))
-		if(not isdirpath(destinationdirpath)):
-			print("\'" + destinationdirpath + "\' directory has been deleted.")
-		else:
-			userexit('exit',"\'" + destinationdirpath + "\' directory cannot be deleted.")
+	removedir(destinationdirpath)
 	cmd("ln -nfs " + get_expandedpath(sourcedirpath) + " " + get_expandedpath(destinationdirpath))
 	if(islinkpath(destinationdirpath)):
 		print("\'" + destinationdirpath + "\' directory has been linked to \'" + sourcedirpath + "\'")
 	else:
 		userexit('exit',"\'" + destinationdirpath + "\' directory has not been linked.")
+
+def copyfile(sourcefilepath,destinationdirpath):
+	"""Create destination directory if not exist and Copy source file to destination directory"""
+	if(not isdirpath(destinationdirpath)):
+		makedir(destinationdirpath)
+	cmd("cp " + sourcefilepath + " " + destinationdirpath)
+	if(isfilepath(destinationdirpath  + "/" + sourcefilepath.split('/')[-1])):
+		print("\'" + destinationdirpath + "/" + sourcefilepath.split('/')[-1] + "\' file has been copied from \'" + sourcefilepath + "\'")
+	else:
+		userexit('exit',"\'" + destinationdirpath+"/"+sourcefilepath.split('/')[-1] + "\' file has not been copied.")
 
 def makefile(filepath,filelines):
 	"""Delete existing file and Create & Update new file"""
@@ -153,16 +175,6 @@ def makefile(filepath,filelines):
 	except:
 		userexit('exit',"\'" + filepath + "\' file cannot create/open in writemode.")
 
-def copyfile(sourcefilepath,destinationdirpath):
-	"""Create destination directory if not exist and Copy source file to destination directory"""
-	if(not isdirpath(destinationdirpath)):
-		makedir(destinationdirpath)
-	cmd("cp " + sourcefilepath + " " + destinationdirpath)
-	if(isfilepath(destinationdirpath  + "/" + sourcefilepath.split('/')[-1])):
-		print("\'" + destinationdirpath + "/" + sourcefilepath.split('/')[-1] + "\' file has been copied from \'" + sourcefilepath + "\'")
-	else:
-		userexit('exit',"\'" + destinationdirpath+"/"+sourcefilepath.split('/')[-1] + "\' file has not been copied.")
-
 def readfile(filepath):
 	"""Return all filelines"""
 	if(not isfilepath(filepath)):
@@ -174,13 +186,7 @@ def readfile(filepath):
 		userexit('exit',"\'" + filepath + "\' file cannot open in readmode.")
 	return filelines
 
-def get_unique_list(normal_list):
-	"""Return list with deleted duplicate elements"""
-	unique_list = []
-	[unique_list.append(l) for l in normal_list if not unique_list.count(l)]
-	return unique_list
-
-def get_matchindices(file,pattern):
+def get_matchindices(filedata,pattern):
 	"""Return match indices in file/filelist (format:[[[line number, start of match, end of match],...],[...],...])"""
 	lineno = 0
 	if type(pattern) is str:
@@ -190,12 +196,12 @@ def get_matchindices(file,pattern):
 	else:
 		userexit('exit',"Unsupported 'type' of object pattern:\'" + pattern + "\'.")
 	matchindices = [[] for i in range(len(pl))]
-	if type(file) is str:
-		filepath = file
+	if type(filedata) is str:
+		filepath = get_expandedpath(filedata)
 		if(not isfilepath(filepath)):
 			userexit('exit',"\'" + filepath + "\' file does not exist.\n")
 		try:
-			with open(get_expandedpath(filepath), 'r') as f:
+			with open(filepath, 'r') as f:
 				for line in f:
 					for i,p in enumerate(pl):
 						for m in p.finditer(line):
@@ -203,15 +209,14 @@ def get_matchindices(file,pattern):
 					lineno = lineno + 1
 		except:
 			userexit('exit',"\'" + filepath + "\' file cannot open in readmode.")
-	elif type(file) is list:
-		filelines = file
-		for line in filelines:
+	elif type(filedata) is list:
+		for line in filedata:
 			for i,p in enumerate(pl):
 				for m in p.finditer(line):
 					matchindices[i].append([lineno]+list(m.span()))
 			lineno = lineno + 1
 	else:
-		userexit('exit',"Unsupported 'type' of object 'file':\'" + file + "\'.")
+		userexit('exit',"Unsupported 'type' of object 'file':\'" + filedata + "\'.")
 	return matchindices if(type(pattern) is list) else matchindices[0]
 
 def get_matchsections(filepath,startpattern,endpattern):
@@ -221,7 +226,7 @@ def get_matchsections(filepath,startpattern,endpattern):
 	matchlinesstart = get_unique_list([i[0] for i in matchlines[0]])
 	matchlinesend = get_unique_list([i[0] for i in matchlines[1]])
 	for matchstart in matchlinesstart:
-		matchend = next(itertools.ifilter(lambda x:(x>matchstart), matchlinesend), -1)
+		matchend = next((x for x in matchlinesend if x>matchstart), -1)
 		if(matchend != -1):
 			matchsections.append([matchstart,matchend])
 	return matchsections
@@ -257,6 +262,48 @@ def add_matchsectionline(filepath,startpattern,endpattern,line,sectionno=0):
 	else:
 		userexit('exit',"'" + startpattern + "' and/or '" + endpattern + "' patterns does not exist for section number:" + str(sectionno) + " in file:\n" + filepath)
 
+def get_dir_relevanceindex(dirpath,matchparameters):
+	"""Return most relevance (row) index of match parameters(=[[p11,p12,...][p21,p22,...][...]) for given dirpath"""
+	parameter_matching_weight = [0]*len(matchparameters)
+	for idx,row in enumerate(matchparameters):
+		for p in row:
+			if(p in dirpath):
+				parameter_matching_weight[idx] += (1+(len(p)/float(len(dirpath))))
+	return parameter_matching_weight.index(max(parameter_matching_weight)),max(parameter_matching_weight)
+
+def get_dirs_updated(dirpath,matchparameters,setparameters):
+	"""Return updated dirpath(s) for given set parameters(=[[p11,p12,...][p21,p22,...][...]) accordingly to match parameters relevance"""
+	matched_parameters_index,matched_parameters_value = get_dir_relevanceindex(dirpath,matchparameters)
+	matched_parameters = matchparameters[matched_parameters_index]
+	updated_dirpathlist = []
+	if(matched_parameters_value > 0):
+		for row in setparameters:
+			updated_dirpath = dirpath
+			for idx,p in enumerate(row):
+				updated_dirpath = updated_dirpath.replace(matched_parameters[idx],p)
+				if(dirpath!=updated_dirpath and ispathexists(updated_dirpath)):
+					break
+			updated_dirpathlist.append(updated_dirpath)
+	return [d for d in get_unique_list(updated_dirpathlist) if(dirpath!=d)]
+
+def get_datetime_str():
+	"""Return current data and time string"""
+	return time.strftime("%Y%m%d%H%M%S")
+
+def get_unique_list(normal_list):
+	"""Return list with deleted duplicate elements"""
+	unique_list = []
+	[unique_list.append(l) for l in normal_list if not unique_list.count(l)]
+	return unique_list
+
+def get_indented_list(normal_list,noofcolumn,tabsize=8):
+	"""Return list with Added Tab(s)('\t') to the elements of list to indent columns"""
+	maxcolumnlenlist = [(tabsize*(1 + (len(max(normal_list[r::noofcolumn],key=len))/tabsize))) for r in range(noofcolumn)]
+	indentedlist = []
+	for index,value in enumerate(normal_list):
+		indentedlist.append(value + ('\n' if(not ((index+1)%noofcolumn))else "".join((1 + (((maxcolumnlenlist[index%noofcolumn]-len(value))-1)/tabsize))*['\t'])))
+	return indentedlist
+
 def isfullmatch(pattern,string):
 	"""Return True if (compiled)pattern match to string from start to end"""
 	s = pattern.search(string)
@@ -288,6 +335,90 @@ def get_natural_nearest_match(words,possibilities,dummychar='.'):
 		return (nwords[0] if(type(words) is str)else nwords)
 	else:
 		return ('' if(type(words) is str)else [])
+
+def get_aliaslist(datalist):
+	"""Return alias(unique keyword/alphanumeric) for each element of list"""
+	aliaslist = []
+	for i in range(len(datalist)):
+		matchidx = np.array([0]*len(datalist[i]))
+		for j in range(len(datalist)):
+			if(j != i):
+				for sm in difflib.SequenceMatcher(None, datalist[i], datalist[j]).get_matching_blocks()[:-1]:
+					matchidx[sm[0]:sm[0]+sm[2]] += 1
+		matchidx_sorted4value = [ele[0] for ele in sorted(enumerate(matchidx.tolist()), key=lambda x:x[1])]
+		for idx,j in enumerate(matchidx_sorted4value):
+			if(datalist[i][j].isalpha()):
+				if(datalist[i][j].lower() not in aliaslist):
+					aliaslist.append(datalist[i][j].lower())
+				else:
+					for k in matchidx_sorted4value[idx+1:]:
+						ma = (datalist[i][j]+datalist[i][k]).lower()
+						if(ma not in aliaslist and ma.isalnum()):
+							aliaslist.append(ma)
+							break
+					else:
+						continue
+			else:
+				continue
+			break
+		if(len(aliaslist)-1 != i):
+			aliaslist.append('a'+str(i+1))
+	return aliaslist
+
+def get_selectedindex(inputstr,datalist,aliaslist,sequencelist):
+	"""Return selected index using data or alias or sequence number"""
+	inputstr = inputstr.strip()
+	if(inputstr.isdigit()):
+		selectionlist = sequencelist
+	elif(inputstr.replace('-','').isalnum()):
+		selectionlist = aliaslist
+	else:
+		selectionlist = datalist
+	selectedinput = get_nearest_match(inputstr,selectionlist)
+	if(selectedinput != ''):
+		return selectionlist.index(selectedinput),sequencelist[selectionlist.index(selectedinput)]
+	else:
+		return '',''
+
+def get_selectedindices(inputstr,datalist,aliaslist=[],sequencelist=[]):
+	"""Return selected indices using data/alias/sequence separated by ',' and/or range limit separated by '-' or all (data) with '--'"""
+	if(not datalist):
+		userexit('exit',"No data fonud for selection. Please provide data list for selection.")
+	if(not aliaslist):
+		aliaslist = get_aliaslist(datalist)
+	if(not sequencelist):
+		sequencelist = list(map(str,range(1,1+len(datalist))))
+	selectedindices = []
+	if ('--' in inputstr):
+		selectedindices = range(len(datalist))
+	else:
+		for mn in inputstr.split(','):
+			if(mn.strip() == ''):
+				continue
+			elif('-' in list(mn)):
+				m_start_mn , m_stop_mn = '' , ''
+				if(mn.strip().split('-')[0].strip() != ''):
+					m_start_i,m_start_mn = get_selectedindex(mn.strip().split('-')[0].strip(),datalist,aliaslist,sequencelist)
+				if(mn.strip().split('-')[1].strip() != ''):
+					m_stop_i,m_stop_mn = get_selectedindex(mn.strip().split('-')[1].strip(),datalist,aliaslist,sequencelist)
+				if(m_start_mn == '' and m_stop_mn == ''):
+					continue
+				elif(m_start_mn != '' and m_stop_mn == ''):
+					selectedindices.append(m_start_i)
+				elif(m_start_mn == '' and m_stop_mn != ''):
+					selectedindices.append(m_stop_i)
+				else:
+					if(int(m_stop_mn) > int(m_start_mn)):
+						for m_ss in range(int(m_start_mn),int(m_stop_mn)+1):
+							selectedindices.append(get_selectedindex(str(m_ss),datalist,aliaslist,sequencelist)[0])
+					elif(int(m_stop_mn) < int(m_start_mn)):
+						for m_ss in range(int(m_start_mn),int(m_stop_mn)-1,-1):
+							selectedindices.append(get_selectedindex(str(m_ss),datalist,aliaslist,sequencelist)[0])
+					else:
+						selectedindices.append(m_start_i)
+			else:
+				selectedindices.append(get_selectedindex(mn,datalist,aliaslist,sequencelist)[0])
+	return selectedindices
 
 def get_diffcnol(diffout):
 	"""Return Change Number of Line in output of 'diff' command (Eg. diff -iEbwBsI '^\s*--\|^\s*$' <file1> <file2>)"""
@@ -351,22 +482,6 @@ def get_logicdifftxt(logicdir1,logicdir2,toplogic):
 		print("Following components does not exist for both release:\n" + ', '.join([ld[0] for ld in logicdiff if(ld[1]==-3)]) + "\n")
 	return [ld[0] for ld in logicdiff if(ld[1]>0)]
 
-def get_environ(envvar):
-	"""Return value of environment variable"""
-	envvarvalue = os.getenv(envvar) #to get start-up envvar: os.environ.get(envvar)
-	if(envvarvalue == None):
-		userexit('exit',"'" + envvar + "' environment variable is NOT defined. Please define it and re-run.")
-	return envvarvalue
-
-def get_pwd():
-	"""Get present working directory"""
-	return os.getenv('PWD') #will return referenced symbolic link
-	#return os.getcwd() #will return dereferenced symbolic link
-
-def get_datetime_str():
-	"""Return current data and time string"""
-	return time.strftime("%Y%m%d%H%M%S")
-
 def get_commandlist(*commandtypes):
 	"""Get list of available commands based on type"""
 	commandlist = { 
@@ -386,19 +501,6 @@ def get_commandlist(*commandtypes):
 def get_commandname(cmdstr,*commandtypes):
 	"""Get exact command name based on command string and command types"""
 	return get_nearest_match(cmdstr.lower(),get_commandlist(*commandtypes)).strip()
-
-def sendcmd2shell(cmdstr, file2shell):
-	"""Print shell command and return to parent script"""
-	#os.environ['PYOUT_INTERPRETER'] = "@shell>" + cmdstr
-	#os.putenv('PYOUT_INTERPRETER',"@shell>" + cmdstr)
-	#cmd("export PYOUT_INTERPRETER='@shell>'",True)
-	#print 'PYOUT_INTERPRETER:'+str(get_environ('PYOUT_INTERPRETER'))
-	if(os.path.isfile(file2shell)):
-		with open(file2shell, 'w+') as f:
-			f.write(cmdstr)
-	else:
-		print("@shell>" + cmdstr)
-	sys.exit(10)
 
 def get_pathlist(pathmatrix,pathtype = 'file',filestr='',lsltrpickup = 0):
 	"""Generate available file(s)/directory(-ies) path list from given absolute pathmatrix"""
@@ -530,122 +632,6 @@ def openpath(pathmatrix,editor='',searchstr='',filestr='',lsltrpickup=0,file2she
 		else:
 			os.system("gvim -p " + ((" -c \"/" + searchstr + "\" ") if(searchstr != '')else "") + pathliststr)
 			print("Opened " + editor + " with file: " + ("\nOpened " + editor + " with file: ").join(pathlist))
-
-def get_aliaslist(datalist):
-	"""Return alias(unique keyword/alphanumeric) for each element of list"""
-	aliaslist = []
-	for i in range(len(datalist)):
-		matchidx = np.array([0]*len(datalist[i]))
-		for j in range(len(datalist)):
-			if(j != i):
-				for sm in difflib.SequenceMatcher(None, datalist[i], datalist[j]).get_matching_blocks()[:-1]:
-					matchidx[sm[0]:sm[0]+sm[2]] += 1
-		matchidx_sorted4value = [ele[0] for ele in sorted(enumerate(matchidx.tolist()), key=lambda x:x[1])]
-		for idx,j in enumerate(matchidx_sorted4value):
-			if(datalist[i][j].isalpha()):
-				if(datalist[i][j].lower() not in aliaslist):
-					aliaslist.append(datalist[i][j].lower())
-				else:
-					for k in matchidx_sorted4value[idx+1:]:
-						ma = (datalist[i][j]+datalist[i][k]).lower()
-						if(ma not in aliaslist and ma.isalnum()):
-							aliaslist.append(ma)
-							break
-					else:
-						continue
-			else:
-				continue
-			break
-		if(len(aliaslist)-1 != i):
-			aliaslist.append('a'+str(i+1))
-	return aliaslist
-
-def get_selectedindex(inputstr,datalist,aliaslist,sequencelist):
-	"""Return selected index using data or alias or sequence number"""
-	inputstr = inputstr.strip()
-	if(inputstr.isdigit()):
-		selectionlist = sequencelist
-	elif(inputstr.replace('-','').isalnum()):
-		selectionlist = aliaslist
-	else:
-		selectionlist = datalist
-	selectedinput = get_nearest_match(inputstr,selectionlist)
-	if(selectedinput != ''):
-		return selectionlist.index(selectedinput),sequencelist[selectionlist.index(selectedinput)]
-	else:
-		return '',''
-
-def get_selectedindices(inputstr,datalist,aliaslist=[],sequencelist=[]):
-	"""Return selected indices using data/alias/sequence separated by ',' and/or range limit separated by '-' or all (data) with '--'"""
-	if(not datalist):
-		userexit('exit',"No data fonud for selection. Please provide data list for selection.")
-	if(not aliaslist):
-		aliaslist = get_aliaslist(datalist)
-	if(not sequencelist):
-		sequencelist = list(map(str,range(1,1+len(datalist))))
-	selectedindices = []
-	if ('--' in inputstr):
-		selectedindices = range(len(datalist))
-	else:
-		for mn in inputstr.split(','):
-			if(mn.strip() == ''):
-				continue
-			elif('-' in list(mn)):
-				m_start_mn , m_stop_mn = '' , ''
-				if(mn.strip().split('-')[0].strip() != ''):
-					m_start_i,m_start_mn = get_selectedindex(mn.strip().split('-')[0].strip(),datalist,aliaslist,sequencelist)
-				if(mn.strip().split('-')[1].strip() != ''):
-					m_stop_i,m_stop_mn = get_selectedindex(mn.strip().split('-')[1].strip(),datalist,aliaslist,sequencelist)
-				if(m_start_mn == '' and m_stop_mn == ''):
-					continue
-				elif(m_start_mn != '' and m_stop_mn == ''):
-					selectedindices.append(m_start_i)
-				elif(m_start_mn == '' and m_stop_mn != ''):
-					selectedindices.append(m_stop_i)
-				else:
-					if(int(m_stop_mn) > int(m_start_mn)):
-						for m_ss in range(int(m_start_mn),int(m_stop_mn)+1):
-							selectedindices.append(get_selectedindex(str(m_ss),datalist,aliaslist,sequencelist)[0])
-					elif(int(m_stop_mn) < int(m_start_mn)):
-						for m_ss in range(int(m_start_mn),int(m_stop_mn)-1,-1):
-							selectedindices.append(get_selectedindex(str(m_ss),datalist,aliaslist,sequencelist)[0])
-					else:
-						selectedindices.append(m_start_i)
-			else:
-				selectedindices.append(get_selectedindex(mn,datalist,aliaslist,sequencelist)[0])
-	return selectedindices
-
-def get_dir_relevanceindex(dirpath,matchparameters):
-	"""Return most relevance (row) index of match parameters(=[[p11,p12,...][p21,p22,...][...]) for given dirpath"""
-	parameter_matching_weight = [0]*len(matchparameters)
-	for idx,row in enumerate(matchparameters):
-		for p in row:
-			if(p in dirpath):
-				parameter_matching_weight[idx] += (1+(len(p)/float(len(dirpath))))
-	return parameter_matching_weight.index(max(parameter_matching_weight)),max(parameter_matching_weight)
-
-def get_dirs_updated(dirpath,matchparameters,setparameters):
-	"""Return updated dirpath(s) for given set parameters(=[[p11,p12,...][p21,p22,...][...]) accordingly to match parameters relevance"""
-	matched_parameters_index,matched_parameters_value = get_dir_relevanceindex(dirpath,matchparameters)
-	matched_parameters = matchparameters[matched_parameters_index]
-	updated_dirpathlist = []
-	if(matched_parameters_value > 0):
-		for row in setparameters:
-			updated_dirpath = dirpath
-			for idx,p in enumerate(row):
-				updated_dirpath = updated_dirpath.replace(matched_parameters[idx],p)
-				if(dirpath!=updated_dirpath and ispathexists(updated_dirpath)):
-					break
-			updated_dirpathlist.append(updated_dirpath)
-	return [d for d in get_unique_list(updated_dirpathlist) if(dirpath!=d)]
-
-def get_indented_list(normal_list,noofcolumn):
-	"""Return list with Added Tab(s)('\t') to the elements of list to indent columns"""
-	maxcolumnlenlist = [(8*(1 + (len(max(normal_list[r::noofcolumn],key=len))/8))) for r in range(noofcolumn)]
-	indentedlist = []
-	for index,value in enumerate(normal_list):
-		indentedlist.append(value + ('\n' if(not ((index+1)%noofcolumn))else "".join((1 + (((maxcolumnlenlist[index%noofcolumn]-len(value))-1)/8))*['\t'])))
-	return indentedlist
 
 def list_dir(dirpath,list_type = 'lsltr'):
 	"""List(Print) file names of given absolute directory path"""
