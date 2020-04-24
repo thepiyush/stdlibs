@@ -19,6 +19,7 @@ import difflib
 import itertools
 import re
 import numpy as np
+import shutil
 
 def userinput(usermsg):
 	"""Return user input for given message"""
@@ -96,6 +97,10 @@ def get_expandedpath(path):
 	"""Return 'home director' and 'environment variables' expanded path"""
 	return os.path.expandvars(os.path.expanduser(path))
 
+def get_realpath(path):
+	"""Return expanded path with derefences symbolic links"""
+	return os.path.realpath(get_expandedpath(path))
+
 def issamepath(dirpath1,dirpath2):
 	"""Return True if dirpath1 and dirpath2 are same."""
 	return (os.path.realpath(get_expandedpath(dirpath1)) == os.path.realpath(get_expandedpath(dirpath2)))
@@ -104,63 +109,82 @@ def isdirpath(dirpath):
 	"""Return True if dirpath exist else False"""
 	return os.path.isdir(get_expandedpath(dirpath))
 
-def islinkpath(linkpath):
-	"""Return True if linkpath exists else False"""
-	return os.path.islink(get_expandedpath(linkpath))
-
 def isfilepath(filepath):
 	"""Return True if filepath exists else False"""
 	return os.path.isfile(get_expandedpath(filepath))
+
+def islinkpath(linkpath):
+	"""Return True if linkpath exists else False"""
+	return os.path.islink(get_expandedpath(linkpath))
 
 def ispathexists(path):
 	"""Return True if path exists else False"""
 	return os.path.exists(get_expandedpath(path))
 
-def removedir(dirpath):
-	"""Delete directory if exists"""
-	if(isdirpath(dirpath)):
-		cmd("rm -rf " + get_expandedpath(dirpath))
-		if(not isdirpath(dirpath)):
-			print("\'" + dirpath + "\' directory has been deleted.")
+def deletepath(path):
+	"""Delete directory/file if exists"""
+	if(ispathexists(path)):
+		if(isfilepath(path) or islinkpath(path)):
+			os.remove(path)
+			if(not ispathexists(path)):
+				print("\'" + path + "\' file has been deleted.")
+		elif(isdirpath(path)):
+			shutil.rmtree(path)
+			if(not ispathexists(path)):
+				print("\'" + path + "\' directory has been deleted.")
 		else:
-			userexit('exit',"\'" + dirpath + "\' directory cannot be deleted.")
+			userexit('exit',"\'" + path + "\' is not a directory or file.")
+	if(ispathexists(path)):
+		userexit('exit',"\'" + path + "\' path cannot be deleted.")
+
+def linkpath(sourcepath,destinationpath):
+	"""Delete existing directory/file and Link destination directory/file to source directory/file"""
+	deletepath(destinationpath)
+	if(isfilepath(sourcepath)):
+		if(os.name == 'nt' and sys.version_info.major != 2):
+			os.symlink(sourcepath,destinationpath,target_is_directory=False)
+		else:
+			os.symlink(sourcepath,destinationpath)
+		if(islinkpath(destinationpath)):
+			print("\'" + destinationpath + "\' file has been linked to \'" + sourcepath + "\'")
+	elif(isdirpath(sourcepath)):
+		if(os.name == 'nt' and sys.version_info.major != 2):
+			os.symlink(sourcepath,destinationpath,target_is_directory=True)
+		else:
+			os.symlink(sourcepath,destinationpath)
+		if(islinkpath(destinationpath)):
+			print("\'" + destinationpath + "\' directory has been linked to \'" + sourcepath + "\'")
+	else:
+		userexit('exit',"\'" + sourcepath + "\' is not a directory or file.")
+	if(not islinkpath(destinationpath)):
+		userexit('exit',"\'" + destinationpath + "\' path cannot be linked to \'" + sourcepath + "\'")
+
+def copypath(sourcepath,destinationpath):
+	"""Delete existing directory/file and Copy source directory/file to destination directory/file"""
+	deletepath(destinationpath)
+	if(islinkpath(sourcepath)):
+		linkpath(get_realpath(sourcepath),destinationpath)
+	elif(isdirpath(sourcepath)):
+		shutil.copytree(sourcepath,destinationpath,symlinks=True) #Symbolic links will be copy as a links (not cotent)
+		if(isdirpath(destinationpath)):
+			print("\'" + destinationpath + "\' directory has been copied from \'" + sourcepath + "\'")
+	elif(isfilepath(sourcepath)):
+		shutil.copy2(sourcepath,destinationpath)
+		if(isfilepath(destinationpath)):
+			print("\'" + destinationpath + "\' file has been copied from \'" + sourcepath + "\'")
+	else:
+		userexit('exit',"\'" + sourcepath + "\' is not a directory or file.")
+	if(not ispathexists(destinationpath)):
+		userexit('exit',"\'" + destinationpath + "\' path cannot be copied from \'" + sourcepath + "\'")
 
 def makedir(dirpath):
-	"""Delete existing directory and Make/Create new directory"""
-	removedir(dirpath)
+	"""Delete existing directory and Make/Create new all director(ies) (including intermediate levels)"""
+	deletepath(dirpath)
 	os.makedirs(get_expandedpath(dirpath))
 	if(isdirpath(dirpath)):
 		print("\'" + dirpath + "\' directory has been created.")
 	else:
-		userexit('exit',"\'" + dirpath + "\' directory has not been created.")
-
-def copydir(sourcedirpath,destinationdirpath):
-	"""Delete existing directory and Copy source directory to destination directory"""
-	removedir(destinationdirpath)
-	cmd("cp -rf " + get_expandedpath(sourcedirpath) + " " + get_expandedpath(destinationdirpath))
-	if(isdirpath(destinationdirpath)):
-		print("\'" + destinationdirpath + "\' directory has been copied from \'" + sourcedirpath + "\'")
-	else:
-		userexit('exit',"\'" + destinationdirpath + "\' directory has not been copied.")
-
-def linkdir(sourcedirpath,destinationdirpath):
-	"""Delete existing directory and Link destination directory to source directory"""
-	removedir(destinationdirpath)
-	cmd("ln -nfs " + get_expandedpath(sourcedirpath) + " " + get_expandedpath(destinationdirpath))
-	if(islinkpath(destinationdirpath)):
-		print("\'" + destinationdirpath + "\' directory has been linked to \'" + sourcedirpath + "\'")
-	else:
-		userexit('exit',"\'" + destinationdirpath + "\' directory has not been linked.")
-
-def copyfile(sourcefilepath,destinationdirpath):
-	"""Create destination directory if not exist and Copy source file to destination directory"""
-	if(not isdirpath(destinationdirpath)):
-		makedir(destinationdirpath)
-	cmd("cp " + sourcefilepath + " " + destinationdirpath)
-	if(isfilepath(destinationdirpath  + "/" + sourcefilepath.split('/')[-1])):
-		print("\'" + destinationdirpath + "/" + sourcefilepath.split('/')[-1] + "\' file has been copied from \'" + sourcefilepath + "\'")
-	else:
-		userexit('exit',"\'" + destinationdirpath+"/"+sourcefilepath.split('/')[-1] + "\' file has not been copied.")
+		userexit('exit',"\'" + dirpath + "\' directory cannot be created.")
 
 def makefile(filepath,filelines):
 	"""Delete existing file and Create & Update new file"""
