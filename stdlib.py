@@ -125,11 +125,11 @@ def deletepath(path):
 	"""Delete directory/file if exists"""
 	if(ispathexists(path)):
 		if(isfilepath(path) or islinkpath(path)):
-			os.remove(path)
+			os.remove(get_expandedpath(path))
 			if(not ispathexists(path)):
 				print("\'" + path + "\' file has been deleted.")
 		elif(isdirpath(path)):
-			shutil.rmtree(path)
+			shutil.rmtree(get_expandedpath(path))
 			if(not ispathexists(path)):
 				print("\'" + path + "\' directory has been deleted.")
 		else:
@@ -142,16 +142,16 @@ def linkpath(sourcepath,destinationpath):
 	deletepath(destinationpath)
 	if(isfilepath(sourcepath)):
 		if(os.name == 'nt' and sys.version_info.major != 2):
-			os.symlink(sourcepath,destinationpath,target_is_directory=False)
+			os.symlink(get_expandedpath(sourcepath),get_expandedpath(destinationpath),target_is_directory=False)
 		else:
-			os.symlink(sourcepath,destinationpath)
+			os.symlink(get_expandedpath(sourcepath),get_expandedpath(destinationpath))
 		if(islinkpath(destinationpath)):
 			print("\'" + destinationpath + "\' file has been linked to \'" + sourcepath + "\'")
 	elif(isdirpath(sourcepath)):
 		if(os.name == 'nt' and sys.version_info.major != 2):
-			os.symlink(sourcepath,destinationpath,target_is_directory=True)
+			os.symlink(get_expandedpath(sourcepath),get_expandedpath(destinationpath),target_is_directory=True)
 		else:
-			os.symlink(sourcepath,destinationpath)
+			os.symlink(get_expandedpath(sourcepath),get_expandedpath(destinationpath))
 		if(islinkpath(destinationpath)):
 			print("\'" + destinationpath + "\' directory has been linked to \'" + sourcepath + "\'")
 	else:
@@ -165,11 +165,11 @@ def copypath(sourcepath,destinationpath):
 	if(islinkpath(sourcepath)):
 		linkpath(get_realpath(sourcepath),destinationpath)
 	elif(isdirpath(sourcepath)):
-		shutil.copytree(sourcepath,destinationpath,symlinks=True) #Symbolic links will be copy as a links (not cotent)
+		shutil.copytree(get_expandedpath(sourcepath),get_expandedpath(destinationpath),symlinks=True) #Symbolic links will be copy as a links (not cotent)
 		if(isdirpath(destinationpath)):
 			print("\'" + destinationpath + "\' directory has been copied from \'" + sourcepath + "\'")
 	elif(isfilepath(sourcepath)):
-		shutil.copy2(sourcepath,destinationpath)
+		shutil.copy2(get_expandedpath(sourcepath),get_expandedpath(destinationpath))
 		if(isfilepath(destinationpath)):
 			print("\'" + destinationpath + "\' file has been copied from \'" + sourcepath + "\'")
 	else:
