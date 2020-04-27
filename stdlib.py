@@ -57,7 +57,7 @@ def userselect(datalist=[]):
 		else:
 			if(idx.isdigit() and int(idx)==0):
 				userexit('exit',"User Exit.")
-			print("\nInvalid Sequence Number. Please valid Sequence Number." if(idx.isdigit())else "\nInvalid user input. Please Enter Numbers only.")
+			print("\nInvalid Sequence Number. Please Enter valid Sequence Number." if(idx.isdigit())else "\nInvalid user input. Please Enter Numbers only.")
 	return int(idx)-1
 
 def cmd(cmdstr,shellcmd = False):
