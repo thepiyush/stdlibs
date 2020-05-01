@@ -444,68 +444,6 @@ def get_selectedindices(inputstr,datalist,aliaslist=[],sequencelist=[]):
 				selectedindices.append(get_selectedindex(mn,datalist,aliaslist,sequencelist)[0])
 	return selectedindices
 
-def get_diffcnol(diffout):
-	"""Return Change Number of Line in output of 'diff' command (Eg. diff -iEbwBsI '^\s*--\|^\s*$' <file1> <file2>)"""
-	if(len(diffout.split('\n'))!=2 or diffout.split()[-1]!='identical'):
-		diffadd = diffdelete = diffcnol = 0
-		for d in diffout.split('\n'):
-			if(d):
-				if(d[0]=='>'):
-					diffadd = diffadd + 1
-				elif(d[0]=='<'):
-					diffdelete = diffdelete + 1
-				elif(d[0] in ['0','1','2','3','4','5','6','7','8','9']):
-					diffcnol = diffcnol + max(diffadd,diffdelete)
-					diffadd = diffdelete = 0
-		diffcnol = diffcnol + max(diffadd,diffdelete)
-	else:
-		diffcnol = 0
-	return diffcnol
-
-def get_logiccomponents(logicdir,toplogic):
-	"""Return all subcomponents of given toplevel component from logicdir"""
-	logiccompall = [toplogic.lower()]
-	i = 0
-	while(i < len(logiccompall)):
-		logiccomps = cmd("grep -ohiE '^.*entity\s+[0-9A-Za-z_.]+|^.*component\s+[0-9A-Za-z_]+' " + logicdir+'/'+logiccompall[i]+'.vhdl',True).split('\n')[:-1]
-		logiccompall.extend(get_unique_list([lc.split()[-1].split('.')[-1].lower() for lc in logiccomps if('--' not in lc)] if(len(logiccomps))else []))
-		logiccompall = get_unique_list(logiccompall)
-		i = i + 1
-	if('is' in logiccompall):
-		logiccompall.remove('is')
-	return logiccompall
-
-def get_logicdiff(logicdir1,logicdir2,toplogic):
-	"""Return all subcomponets of toplevel component with compare code (-3=Does not exit in both,-2=Does not exit in dir2,-1=Does not exit in dir1,0=Same in both,>0=CNoL)"""
-	if(not isdirpath(logicdir1) or not isdirpath(logicdir2)):
-		userexit('exit',"Invalid Argument. Please provide valid logic version information.")
-	logicdiff = []
-	for logiccomp in get_unique_list(get_logiccomponents(logicdir1,toplogic) + get_logiccomponents(logicdir2,toplogic)):
-		if(logiccomp):
-			logicdir1comptype = ('vhdl' if(isfilepath(logicdir1+'/'+logiccomp+'.vhdl'))else '')
-			logicdir2comptype = ('vhdl' if(isfilepath(logicdir2+'/'+logiccomp+'.vhdl'))else '')
-			if(logicdir1comptype == 'vhdl' == logicdir2comptype):
-				diff = cmd("diff -iEbwBsI '^\s*--\|^\s*$' " + logicdir1+'/'+logiccomp+'.vhdl ' + logicdir2+'/'+logiccomp+'.vhdl',True)
-				logicdiff.append([logiccomp+'.vhdl',get_diffcnol(diff)])
-			else:
-				logicdiff.append([logiccomp,(-1 if(logicdir1comptype == '')else 0) + (-2 if(logicdir2comptype == '')else 0)])
-	return logicdiff
-
-def get_logicdifftxt(logicdir1,logicdir2,toplogic):
-	"""Print logic components informations and Return differ logic components list"""
-	logicdiff = get_logicdiff(logicdir1,logicdir2,toplogic)
-	if(sum(ld[1]>0 for ld in logicdiff)):
-		print("Following components have difference between two release (with Changed No of Lines):\n" + ', '.join([ld[0]+'(CNoL='+str(ld[1])+')' for ld in logicdiff if(ld[1]>0)]) + "\n")
-	if(sum(ld[1]==-1 for ld in logicdiff)):
-		print("Following components does not exist for " + logicdir1 + " release:\n" + ', '.join([ld[0] for ld in logicdiff if(ld[1]==-1)]) + "\n")
-	if(sum(ld[1]==-2 for ld in logicdiff)):
-		print("Following components does not exist for " + logicdir2 + " release:\n" + ', '.join([ld[0] for ld in logicdiff if(ld[1]==-2)]) + "\n")
-	if(sum(ld[1]==0 for ld in logicdiff)):
-		print("Following components are identical for both release:\n" + ', '.join([ld[0] for ld in logicdiff if(ld[1]==0)]) + "\n")
-	if(sum(ld[1]==-3 for ld in logicdiff)):
-		print("Following components does not exist for both release:\n" + ', '.join([ld[0] for ld in logicdiff if(ld[1]==-3)]) + "\n")
-	return [ld[0] for ld in logicdiff if(ld[1]>0)]
-
 def get_commandlist(*commandtypes):
 	"""Get list of available commands based on type"""
 	commandlist = { 
@@ -656,11 +594,3 @@ def openpath(pathmatrix,editor='',searchstr='',filestr='',lsltrpickup=0,file2she
 		else:
 			os.system("gvim -p " + ((" -c \"/" + searchstr + "\" ") if(searchstr != '')else "") + pathliststr)
 			print("Opened " + editor + " with file: " + ("\nOpened " + editor + " with file: ").join(pathlist))
-
-def list_dir(dirpath,list_type = 'lsltr'):
-	"""List(Print) file names of given absolute directory path"""
-	print(dirpath + "/:")
-	if(list_type == 'ls'):
-		print(cmd("ls --color=always " + get_expandedpath(dirpath) + "/"))
-	else:
-		print(cmd("ls -ltrh --color=always " + get_expandedpath(dirpath) + "/"))
