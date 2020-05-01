@@ -72,8 +72,8 @@ def cmd(cmdstr,shellcmd = False):
 		userexit('exit',"\'" + cmdstr + "\' command cannot be executed.")
 		return -1
 
-def sendcmd2shell(cmdstr, file2shell):
-	"""Print shell command and return to parent script"""
+def return2shell(cmdstr, file2shell):
+	"""Write/Print shell command and return to parent script"""
 	if(isfilepath(file2shell)):
 		makefile(file2shell,[cmdstr])
 	else:
@@ -554,11 +554,11 @@ def openpath(pathmatrix,editor='',searchstr='',filestr='',lsltrpickup=0,file2she
 			for i,d in enumerate(pathlist):
 				if(file2shell != '' and (i == 0 and len(pathlist) == 1 and d != get_pwd())):
 					if(editor == 'cd'):
-						sendcmd2shell("cd " + d, file2shell)
+						return2shell("cd " + d, file2shell)
 					elif(editor == 'cdls'):
-						sendcmd2shell("cd " + d + " && ls --color=always " + filestr, file2shell)
+						return2shell("cd " + d + " && ls --color=always " + filestr, file2shell)
 					else:
-						sendcmd2shell("cd " + d + " && ls -ltrh --color=always " + filestr, file2shell)
+						return2shell("cd " + d + " && ls -ltrh --color=always " + filestr, file2shell)
 				else:
 					if(editor == 'cd'):
 						os.system("gnome-terminal --window --maximize --working-directory=\"" + d + "\"")
@@ -593,4 +593,3 @@ def openpath(pathmatrix,editor='',searchstr='',filestr='',lsltrpickup=0,file2she
 		else:
 			os.system("gvim -p " + ((" -c \"/" + searchstr + "\" ") if(searchstr != '')else "") + pathliststr)
 			print("Opened " + editor + " with file: " + ("\nOpened " + editor + " with file: ").join(pathlist))
-
