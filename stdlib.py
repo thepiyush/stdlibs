@@ -74,9 +74,8 @@ def cmd(cmdstr,shellcmd = False):
 
 def sendcmd2shell(cmdstr, file2shell):
 	"""Print shell command and return to parent script"""
-	if(os.path.isfile(file2shell)):
-		with open(file2shell, 'w+') as f:
-			f.write(cmdstr)
+	if(isfilepath(file2shell)):
+		makefile(file2shell,[cmdstr])
 	else:
 		print("@shell>" + cmdstr)
 	sys.exit(10)
@@ -594,3 +593,4 @@ def openpath(pathmatrix,editor='',searchstr='',filestr='',lsltrpickup=0,file2she
 		else:
 			os.system("gvim -p " + ((" -c \"/" + searchstr + "\" ") if(searchstr != '')else "") + pathliststr)
 			print("Opened " + editor + " with file: " + ("\nOpened " + editor + " with file: ").join(pathlist))
+
