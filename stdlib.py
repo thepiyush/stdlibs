@@ -519,35 +519,35 @@ def openpath(pathmatrix,editor='',argstr='',filestr='',lsltrpickup=0,file2shell=
 			print("Opened " + editor + " with file: " + ("\nOpened " + editor + " with file: ").join(pathlist))
 		elif(editor == 'emacs'):
 			for fpl in pathlist:
-				os.system("emacs " + fpl + " &")
+				os.system("emacs " + argstr + " " + fpl + " &")
 				print("Opened " + editor + " with file: " + fpl)
 		elif(editor == 'emacsr'):
 			for fpl in pathlist:
-				os.system("emacs " + fpl + " --eval \'(setq buffer-read-only t)\' &")
+				os.system("emacs " + argstr + " " + fpl + " --eval \'(setq buffer-read-only t)\' &")
 				print("Opened " + editor + " with file: " + fpl)
 		elif(editor == 'kate'):
-			os.system("kate -u " + pathliststr + " &")
+			os.system("kate -u " + argstr + " " + pathliststr + " &")
 			print("Opened " + editor + " with file: " + ("\nOpened " + editor + " with file: ").join(pathlist))
 		elif(editor == 'gedit'):
-			os.system("gedit " + pathliststr + " &")
+			os.system("gedit " + argstr + " " + pathliststr + " &")
 			print("Opened " + editor + " with file: " + ("\nOpened " + editor + " with file: ").join(pathlist))
 		elif(editor == 'nedit'):
-			os.system("nedit " + pathliststr + " &")
+			os.system("nedit " + argstr + " " + pathliststr + " &")
 			print("Opened " + editor + " with file: " + ("\nOpened " + editor + " with file: ").join(pathlist))
 		#Diff Editors
 		elif(editor == 'gvimdiff'):
 			os.system("gvimdiff " + ((" -c \"/" + argstr + "\" ") if(argstr != '')else "") + pathliststr + " &")
 			print("Opened " + editor + " with files: " + pathliststr)
 		elif(editor == 'tkdiff'):
-			os.system("tkdiff " + pathliststr + " &")
+			os.system("tkdiff " + argstr + " " + pathliststr + " &")
 			print("Opened " + editor + " with files: " + pathliststr)
 		#Image Viewer
 		elif(editor == 'eog'):
-			os.system("eog -n " + pathliststr + " &")
+			os.system("eog -n " + argstr + " " + pathliststr + " &")
 			print("Opened " + editor + " with file: " + ("\nOpened " + editor + " with file: ").join(pathlist))
 		elif(editor == 'display'):
 			for fpl in pathlist:
-				os.system("display " + fpl + " &")
+				os.system("display " + argstr + " " + fpl + " &")
 				print("Opened " + editor + " with file: " + fpl)
 		#Commands
 		elif(editor == 'cd' or editor == 'cdls' or editor == 'cdlsltr'):
@@ -556,9 +556,9 @@ def openpath(pathmatrix,editor='',argstr='',filestr='',lsltrpickup=0,file2shell=
 					if(editor == 'cd'):
 						return2shell("cd " + d, file2shell)
 					elif(editor == 'cdls'):
-						return2shell("cd " + d + " && ls --color=always " + filestr, file2shell)
+						return2shell("cd " + d + " && ls --color=always " + argstr + " " + filestr, file2shell)
 					else:
-						return2shell("cd " + d + " && ls -ltrh --color=always " + filestr, file2shell)
+						return2shell("cd " + d + " && ls -ltrh --color=always " + argstr + " " + filestr, file2shell)
 				else:
 					if(editor == 'cd'):
 						os.system("gnome-terminal --window --maximize --working-directory=\"" + d + "\"")
@@ -568,14 +568,14 @@ def openpath(pathmatrix,editor='',argstr='',filestr='',lsltrpickup=0,file2shell=
 						os.system("gnome-terminal --window --maximize --working-directory=\"" + d + "\" -e \"ksh -c 'ls -ltrh --color=always "+argstr+" "+filestr+"';ksh\"")
 					print("Opened gnome-terminal with dir: " + d)
 		elif(editor == 'ls'):
-			print("ls --color=always " + (" ".join([d + "/" + filestr for d in pathlist])) + " :")
-			os.system("ls --color=always " + (" ".join([d + "/" + filestr for d in pathlist])))
+			print("ls --color=always " + argstr + " " + (" ".join([d + "/" + filestr for d in pathlist])) + " :")
+			os.system("ls --color=always " + argstr + " " + (" ".join([d + "/" + filestr for d in pathlist])))
 		elif(editor == 'lsltr'):
-			print("ls -ltrh --color=always " + (" ".join([d + "/" + filestr for d in pathlist])) + " :")
-			os.system("ls -ltrh --color=always " + (" ".join([d + "/" + filestr for d in pathlist])))
+			print("ls -ltrh --color=always " + argstr + " " + (" ".join([d + "/" + filestr for d in pathlist])) + " :")
+			os.system("ls -ltrh --color=always " + argstr + " " + (" ".join([d + "/" + filestr for d in pathlist])))
 		elif(editor == 'cat'):
-				print("cat " + pathliststr + " :")
-				os.system("cat " + pathliststr)
+				print("cat " + argstr + " " + pathliststr + " :")
+				os.system("cat " + argstr + " " + pathliststr)
 				print("")
 		elif(editor == 'grep'):
 			if(argstr != ''):
