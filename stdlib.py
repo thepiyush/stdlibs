@@ -501,8 +501,8 @@ def get_pathlist(pathmatrix,pathtype = 'file',filestr='',lsltrpickup = 0):
 					print(("Directory" if(pathtype!='file')else "File") + " not found for '" + path + "' path search.")
 	return availablepathlist
 
-def openpath(pathmatrix,editor='',searchstr='',filestr='',lsltrpickup=0,file2shell='',askpathcount=10):
-	"""Open file or dir path with given constraint like editor,searchstr,filestr,lsltrpickup,etc."""
+def openpath(pathmatrix,editor='',argstr='',filestr='',lsltrpickup=0,file2shell='',askpathcount=10):
+	"""Open file or dir path with given constraint like editor,argstr,filestr,lsltrpickup,etc."""
 	editor = get_commandname(editor,'command','editor') if(type(editor) is str)else get_commandname(*editor)
 	lsltrpickup = (int(lsltrpickup) if(lsltrpickup.isdigit())else 0) if(type(lsltrpickup) is str)else lsltrpickup
 	pathlist = get_pathlist(pathmatrix,'dir' if(editor in ['cd','cdls','cdlsltr','ls','lsltr'])else 'file',filestr,lsltrpickup)
@@ -512,10 +512,10 @@ def openpath(pathmatrix,editor='',searchstr='',filestr='',lsltrpickup=0,file2she
 	if(pathliststr):
 		#Editors
 		if(editor == 'gvim'):
-			os.system("gvim -p " + ((" -c \"/" + searchstr + "\" ") if(searchstr != '')else "") + pathliststr)
+			os.system("gvim -p " + ((" -c \"/" + argstr + "\" ") if(argstr != '')else "") + pathliststr)
 			print("Opened " + editor + " with file: " + ("\nOpened " + editor + " with file: ").join(pathlist))
 		elif(editor == 'gvimr'):
-			os.system("gvim -pR " + ((" -c \"/" + searchstr + "\" ") if(searchstr != '')else "") + pathliststr)
+			os.system("gvim -pR " + ((" -c \"/" + argstr + "\" ") if(argstr != '')else "") + pathliststr)
 			print("Opened " + editor + " with file: " + ("\nOpened " + editor + " with file: ").join(pathlist))
 		elif(editor == 'emacs'):
 			for fpl in pathlist:
@@ -536,7 +536,7 @@ def openpath(pathmatrix,editor='',searchstr='',filestr='',lsltrpickup=0,file2she
 			print("Opened " + editor + " with file: " + ("\nOpened " + editor + " with file: ").join(pathlist))
 		#Diff Editors
 		elif(editor == 'gvimdiff'):
-			os.system("gvimdiff " + ((" -c \"/" + searchstr + "\" ") if(searchstr != '')else "") + pathliststr + " &")
+			os.system("gvimdiff " + ((" -c \"/" + argstr + "\" ") if(argstr != '')else "") + pathliststr + " &")
 			print("Opened " + editor + " with files: " + pathliststr)
 		elif(editor == 'tkdiff'):
 			os.system("tkdiff " + pathliststr + " &")
@@ -578,18 +578,18 @@ def openpath(pathmatrix,editor='',searchstr='',filestr='',lsltrpickup=0,file2she
 				os.system("cat " + pathliststr)
 				print("")
 		elif(editor == 'grep'):
-			if(searchstr != ''):
-				print("zgrep --color=always " + searchstr + " " + pathliststr + " :")
-				os.system("zgrep --color=always " + searchstr + " " + pathliststr)
+			if(argstr != ''):
+				print("zgrep --color=always " + argstr + " " + pathliststr + " :")
+				os.system("zgrep --color=always " + argstr + " " + pathliststr)
 			else:
 				print(" ".join(pathlist) + "\nEnter one more argument for 'PATTERN' to 'grep' in file(s).")
 		elif(editor == 'awk'):
-			if(searchstr != ''):
-				print("awk " + searchstr + " " + pathliststr + " :")
-				os.system("awk " + searchstr + " " + pathliststr)
+			if(argstr != ''):
+				print("awk " + argstr + " " + pathliststr + " :")
+				os.system("awk " + argstr + " " + pathliststr)
 			else:
 				print(" ".join(pathlist) + "\nEnter one more argument for 'PATTERN'/'ACTION' to 'awk' in file(s).")
 		#Default
 		else:
-			os.system("gvim -p " + ((" -c \"/" + searchstr + "\" ") if(searchstr != '')else "") + pathliststr)
+			os.system("gvim -p " + ((" -c \"/" + argstr + "\" ") if(argstr != '')else "") + pathliststr)
 			print("Opened " + editor + " with file: " + ("\nOpened " + editor + " with file: ").join(pathlist))
