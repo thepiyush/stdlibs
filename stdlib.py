@@ -563,9 +563,9 @@ def openpath(pathmatrix,editor='',argstr='',filestr='',lsltrpickup=0,file2shell=
 					if(editor == 'cd'):
 						os.system("gnome-terminal --window --maximize --working-directory=\"" + d + "\"")
 					elif(editor == 'cdls'):
-						os.system("gnome-terminal --window --maximize --working-directory=\"" + d + "\" -e \"ksh -c 'ls --color=always "+searchstr+" "+filestr+"';ksh\"")
+						os.system("gnome-terminal --window --maximize --working-directory=\"" + d + "\" -e \"ksh -c 'ls --color=always "+argstr+" "+filestr+"';ksh\"")
 					else:
-						os.system("gnome-terminal --window --maximize --working-directory=\"" + d + "\" -e \"ksh -c 'ls -ltrh --color=always "+searchstr+" "+filestr+"';ksh\"")
+						os.system("gnome-terminal --window --maximize --working-directory=\"" + d + "\" -e \"ksh -c 'ls -ltrh --color=always "+argstr+" "+filestr+"';ksh\"")
 					print("Opened gnome-terminal with dir: " + d)
 		elif(editor == 'ls'):
 			print("ls --color=always " + (" ".join([d + "/" + filestr for d in pathlist])) + " :")
