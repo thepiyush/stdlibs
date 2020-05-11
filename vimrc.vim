@@ -1,5 +1,5 @@
 "
-" File name: vimrc.txt
+" File name: .vimrc
 "
 " Author: Piyush
 "
