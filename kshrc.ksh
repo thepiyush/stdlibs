@@ -89,7 +89,7 @@ export VXP_EDITOR=gedit
 ##	pyscript="python /.../interpreter.py shell $@";
 ##	set -f; $pyscript; if [[ $? == 10 ]]; then pyscriptout=`$pyscript`; set +f; eval "${pyscriptout#*@shell>}"; fi; set +f;
 ##	pyscript="python /.../interpreter.py shell";
-##	set -f; $pyscript" $@"; if [[ $? == 10 ]]; then pyscriptout=`$pyscript" $@"`; set +f; eval "${pyscriptout#*@shell>}"; fi; set +f;
+##	set -f; $pyscript $@; if [[ $? == 10 ]]; then pyscriptout=`$pyscript $@`; set +f; eval "${pyscriptout#*@shell>}"; fi; set +f;
 #	tmpfile=$(mktemp);trap "rm $tmpfile" 0 2 3 15;echo "Created temporary file: "$tmpfile;
 #	python /.../interpreter.py 'tmpfile='$tmpfile "$@";
 #	if [[ $? == 10 ]];then eval "$(cat "$tmpfile")"; fi;
