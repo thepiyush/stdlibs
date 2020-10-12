@@ -167,6 +167,8 @@ nmap <leader>g :call GPAhighlight()<CR>
 ":v/pattern/d			"To delete all lines that does NOT match a pattern
 "Ctrl+v <select_lines> Shift+i	"To enter in insert mode to add text at selected multiple lines
 "Ctrl+r <Register>		"To paste from register(eg.*,",a) in insert mode
+":w !python                     "To run Python script from Vim
+":w !python - [arg1] ... [argn] "To run Python script with arguments from Vim
 
 "--------------------Modifications end--------------------
 
