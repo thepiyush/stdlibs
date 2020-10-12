@@ -24,6 +24,7 @@ set guioptions+=b 	"Enable Bottom (horizontal) scrollbar
 set number		"Display Line number
 "set relativenumber	"Display Relative Line number (available only from version 7.3)
 set cursorline		"Highlight Cursor line
+set hlsearch		"Highlight Current Search
 set incsearch		"Enable Incremental Search
 set tabpagemax=100	"Number of Tabs Limit
 set cindent		"C style indentation
