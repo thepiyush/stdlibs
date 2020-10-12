@@ -1,15 +1,18 @@
-"
-" File name: kshrc.txt
-"
-" Author: Piyush
-"
-" Description: Modified .kshrc (Korn Shell Run Commands)
-" 
-" Chanage log:
-" 2017/06/26 : Initial version. (Piyush)
-"
-"
+#
+# File name: kshrc.txt
+#
+# Author: Piyush
+#
+# Description: Modified .kshrc (Korn Shell Run Commands)
+# 
+# Chanage log:
+# 2017/06/26 : Initial version. (Piyush)
+#
+#
 #-----------------------------Modifications start------------------------------
+#For MacOS: ~/.bash_profile
+alias gvim='/Applications/MacVim.app/Contents/MacOS/Vim -g'
+#For Linux: ~/.kshrc
 #Press Ctrl+v and then press key to know key-code (@Csh: bind `"^[u":"\n"`) OR
 #@shell>od [-cx] then press key(s) and to terminate command press: Ctrl+d
 #Keybinds: Arrow keys and Home & End keys:
