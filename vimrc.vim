@@ -12,8 +12,10 @@
 
 "--------------------Modifications start--------------------
 "Type ':set guifont?' to get current guifont
-if has("unix") "(for Linux)
-	set guifont=Monospace\ 13
+if has("macunix") "(for MacOS)
+	set guifont=Menlo-Regular:h18
+elseif has("unix") "(for Linux)
+	set guifont=Monospace\ 17
 else "(for Window)
 	set guifont=Lucida_Console:h10
 endif
@@ -57,14 +59,18 @@ nmap <leader><leader> :
 "Alternative to character '"'
 map <leader>u "
 "To set (dark or light) solarized colorscheme
-if has("unix") "(for Linux)
-	nmap <leader>c :set guifont=Monospace\ Bold\ 13<CR>:let &background=(&background=="dark"?"light":"dark")<BAR>set background?<CR>:colorscheme solarized<CR>
+if has("macunix") "(for MacOS)
+	nmap <leader>c :set guifont=Menlo-Bold:h18<CR>:let &background=(&background=="dark"?"light":"dark")<BAR>set background?<CR>:colorscheme solarized<CR>
+elseif has("unix") "(for Linux)
+	nmap <leader>c :set guifont=Monospace\ Bold\ 17<CR>:let &background=(&background=="dark"?"light":"dark")<BAR>set background?<CR>:colorscheme solarized<CR>
 else "(for Window)
 	nmap <leader>c :set guifont=Lucida_Console:h10:b<CR>:let &background=(&background=="dark"?"light":"dark")<BAR>set background?<CR>:colorscheme solarized<CR>
 endif
 "To set default colorscheme
-if has("unix") "(for Linux)
-	nmap <leader>C :set guifont=Monospace\ 13<CR>:set background=light<CR>:colorscheme default<CR>
+if has("macunix") "(for MacOS)
+	nmap <leader>C :set guifont=Menlo-Regular:h18<CR>:set background=light<CR>:colorscheme default<CR>
+elseif has("unix") "(for Linux)
+	nmap <leader>C :set guifont=Monospace\ 17<CR>:set background=light<CR>:colorscheme default<CR>
 else "(for Window)
 	nmap <leader>C :set guifont=Lucida_Console:h10<CR>:set background=light<CR>:colorscheme default<CR>
 endif
