@@ -1,9 +1,9 @@
 #
-# File name: kshrc.txt
+# File name: rc.shell
 #
 # Author: Piyush
 #
-# Description: Modified .kshrc (Korn Shell Run Commands)
+# Description: Modified .kshrc (Korn Shell Run Commands) / .bash_profile
 # 
 # Chanage log:
 # 2017/06/26 : Initial version. (Piyush)
