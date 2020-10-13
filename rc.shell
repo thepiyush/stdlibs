@@ -3,14 +3,14 @@
 #
 # Author: Piyush
 #
-# Description: Modified .kshrc (Korn Shell Run Commands) / .bash_profile
+# Description: Modified .kshrc (Korn Shell Run Commands) or .bash_profile or .zprofile
 # 
 # Chanage log:
 # 2017/06/26 : Initial version. (Piyush)
 #
 #
 #-----------------------------Modifications start------------------------------
-#For MacOS: ~/.bash_profile
+#For MacOS: ~/.bash_profile or ~/.zprofile
 alias gvim='/Applications/MacVim.app/Contents/MacOS/Vim -g'
 #For Linux: ~/.kshrc
 #Press Ctrl+v and then press key to know key-code (@Csh: bind `"^[u":"\n"`) OR
