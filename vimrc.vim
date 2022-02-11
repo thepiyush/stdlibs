@@ -169,6 +169,7 @@ nmap <leader>g :call GPAhighlight()<CR>
 "Ctrl+r <Register>		"To paste from register(eg.*,",a) in insert mode
 ":w !python                     "To run Python script from Vim
 ":w !python - [arg1] ... [argn] "To run Python script with arguments from Vim
+":set iskeyword="@,@-@,(,),*"   "To use word which includes [alpha,@,(,),*] for search with '*'/'#'/word
 
 "--------------------Modifications end--------------------
 
