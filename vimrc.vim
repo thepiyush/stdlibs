@@ -83,6 +83,8 @@ nmap <leader>L :set cursorline!<CR>
 nmap <leader>r :set relativenumber!<CR>
 "To unhighlight previous search
 nmap <leader>h :nohlsearch<CR>
+"To highlight syntax as shell file
+nmap <leader>H :set syntax=sh<CR>
 "To run command in all open tabs
 nmap <leader>t :tabdo 
 "To open see all search matched line in quickfix window
