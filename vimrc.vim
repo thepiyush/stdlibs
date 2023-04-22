@@ -19,19 +19,25 @@ elseif has("unix") "(for Linux)
 else "(for Window)
 	set guifont=Lucida_Console:h10
 endif
-"set linespace=1	"Spacing between lines
-set guioptions+=b 	"Enable Bottom (horizontal) scrollbar
-set number		"Display Line number
-"set relativenumber	"Display Relative Line number (available only from version 7.3)
+"set linespace=1		"Spacing between lines
+set guioptions+=b	"Enable Bottom (horizontal) scrollbar
+set number			"Display Line number
+"set relativenumber		"Display Relative Line number (available only from version 7.3)
 set cursorline		"Highlight Cursor line
 set hlsearch		"Highlight Current Search
 set incsearch		"Enable Incremental Search
 set tabpagemax=100	"Number of Tabs Limit
-set cindent		"C style indentation
-set tildeop		"Tilde command '~'
-set nowrap		"Disable text wraping
+set tildeop			"Tilde command '~'
+set nowrap			"Disable text wraping
 set textwidth=0		"Disable automatic text wrapping"
 "set diffopt+=iwhite	"To ignore white space difference in gvimdiff
+"set cindent			"C style indentation
+set autoindent		"Auto copy indentation from current line to new line
+set noexpandtab		"Do not expand tab to spaces
+set tabstop=4		"Size of tab display in characters
+set shiftwidth=4	"Size of indentation in characters
+set softtabstop=0	"Non-zero/non-tabstop value will simulate tab with spaces
+
 
 "solarized colorscheme from http://ethanschoonover.com/solarized/vim-colors-solarized 
 "Downloaded from https://github.com/altercation/vim-colors-solarized/blob/master/colors/solarized.vim to ~/.vim/colors/solarized.vim
@@ -55,6 +61,8 @@ nmap <C-j> <C-d>
 
 "To map <leader> key to space-bar
 let mapleader = " "
+"Alternative to re-source .vimrc
+nmap <leader>. :source ~/.vimrc<CR>
 "Alternative to character ':'
 nmap <leader><leader> :
 "Alternative to character '"'
@@ -147,33 +155,32 @@ endfunction
 nmap <leader>g :call GPAhighlight()<CR>
 
 "gvim Informations:
-":so ~/.vimrc			"To load ~/.vimrc without closing file
-".				"To repeat last normal mode command
-"@:				"To repeat last command-line command/changes
-":%s/word/willreplace/gc	"To replace beginning
-":.,$s/word/willreplace/gc	"To replace from current cursor position
+":so ~/.vimrc					"To load ~/.vimrc without closing file
+".								"To repeat last normal mode command
+"@:								"To repeat last command-line command/changes
+":%s/word/willreplace/gc		"To replace beginning
+":.,$s/word/willreplace/gc		"To replace from current cursor position
 ":%s/\(.*\) \(.*\)/\=printf('%3d %s %s',line('.'),submatch(2),submatch(1))/gc "To print with current line no with swap words
-"/start\_.\{-}\_$		"To search
-"/start\_.\{-}end		"Between 'start' and 'end_of_line','\_.\{-}\_$' search any character or including line break upto any first match of 'end'
-"/Word\c			"For case insensitive
-"/word\C			"For case sensitive
-"/word/e+1			"For 1 offset of cursor position from matched word end
-"/4\...\%[ ]			"To search 4. + any 2 character + space if next char is space
-"/"[^"]*"			"To search " + any character other than " + "
-":sort[!] rn //			"To sort last searched pattern,n=numerical sort,r=for matched pattern,!=reverse sort
-":%!column -t -s ','		"To reformat column of csv separated by ',' (',' will replace by spaces)
-"/^[A-Z]\?\s\+\d\+		"To find pattern like:(' 1' or'N   2')
-"/\d\{2,4}			"To find pattern like:'23' or '345' or '4567' but not '1' or '56789'
+"/start\_.\{-}\_$				"To search
+"/start\_.\{-}end				"Between 'start' and 'end_of_line','\_.\{-}\_$' search any character or including line break upto any first match of 'end'
+"/Word\c						"For case insensitive
+"/word\C						"For case sensitive
+"/word/e+1						"For 1 offset of cursor position from matched word end
+"/4\...\%[ ]					"To search 4. + any 2 character + space if next char is space
+"/"[^"]*"						"To search " + any character other than " + "
+":sort[!] rn //					"To sort last searched pattern,n=numerical sort,r=for matched pattern,!=reverse sort
+":%!column -t -s ','			"To reformat column of csv separated by ',' (',' will replace by spaces)
+"/^[A-Z]\?\s\+\d\+				"To find pattern like:(' 1' or'N   2')
+"/\d\{2,4}						"To find pattern like:'23' or '345' or '4567' but not '1' or '56789'
 ":%s/^\(.*\)\(\n\1\)\+$/\1/gc	"To delete consecutive duplicates lines
-":g/pattern/d			"To delete all lines that match a pattern
-":v/pattern/d			"To delete all lines that does NOT match a pattern
+":g/pattern/d					"To delete all lines that match a pattern
+":v/pattern/d					"To delete all lines that does NOT match a pattern
 "Ctrl+v <select_lines> Shift+i	"To enter in insert mode to add text at selected multiple lines
-"Ctrl+r <Register>		"To paste from register(eg.*,",a) in insert mode
-":w !python                     "To run Python script from Vim
-":w !python - [arg1] ... [argn] "To run Python script with arguments from Vim
+"Ctrl+r <Register>				"To paste from register(eg.*,",a) in insert mode
+":w !python						"To run Python script from Vim
+":w !python - [arg1] ... [argn]	"To run Python script with arguments from Vim
 
-":set iskeyword="@,@-@,(,),*"   "To use word which includes [alpha,@,(,),*] for search with '*'/'#'/word
-"set diffopt+=iwhite		"To ignore white space difference in gvimdiff
+":set iskeyword="@,@-@,(,),*"	"To use word which includes [alpha,@,(,),*] for search with '*'/'#'/word
 
 "--------------------Modifications end--------------------
 
